@@ -24,12 +24,13 @@ install:
 script:
  - make
  - make pdf
+ - make
 
 after_success:
  - mkdir public
  - cd public
  - mv ../*.txt ../*.html ../*.pdf .
- - ../.travis.d/make-index.py . > index.html
+ - ../.travisci/make-index.py . > index.html
  - cd ..
 
 deploy:
