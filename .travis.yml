@@ -35,8 +35,8 @@ after_success:
  - cd ..
 
 deploy:
-  provider: script
-  script: make upload
+  provider: pages
   skip_cleanup: true
   on:
-    tags: true
+    branch: master
+  local_dir: public
