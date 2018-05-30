@@ -25,6 +25,7 @@ script:
  - make
  - make pdf
  - make
+ - make ghpages
 
 after_success:
  - mkdir public
