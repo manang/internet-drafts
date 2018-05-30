@@ -37,6 +37,7 @@ after_success:
 deploy:
   provider: pages
   skip_cleanup: true
+  github_token: $GITHUB_TOKEN # set this in travis-ci dashboard
   on:
     branch: master
   local_dir: public
