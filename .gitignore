@@ -1,0 +1,5 @@
+.DS*
+*.html
+*.pdf
+*.txt
+build
