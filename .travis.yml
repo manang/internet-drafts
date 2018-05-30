@@ -21,12 +21,12 @@ install:
 
 script:
  - make
- - make ghpages || make ghpages
+ - make pdf
 
 after_success:
  - mkdir public
  - cd public
- - mv ../*.txt ../*.html .
+ - mv ../*.txt ../*.html ../*.pdf .
  - ../.travis.d/make-index.py . > index.html
  - cd ..
 
