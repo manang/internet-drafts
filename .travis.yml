@@ -8,6 +8,7 @@ addons:
      - python-pip
      - xsltproc
      - enscript
+     - ps2pdf
 
 env:
   global:
