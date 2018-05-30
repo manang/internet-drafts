@@ -1,5 +1,4 @@
 SHELL:=/bin/bash
-
 LIBDIR := lib
 include $(LIBDIR)/main.mk
 
