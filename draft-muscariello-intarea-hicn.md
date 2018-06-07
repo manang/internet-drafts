@@ -40,11 +40,6 @@ author:
     name: Mauro Sardara
     org: Cisco Systems Inc.
     email: msardara@cisco.com
--
-    ins: A. Compagno
-    name: Alberto Compagno
-    org: Cisco Systems Inc.
-    email: acompagn@cisco.com
 
 normative: 
     RFC0793:
