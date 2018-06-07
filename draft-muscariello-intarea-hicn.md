@@ -55,6 +55,7 @@ normative:
     RFC3550:
     RFC4291:
     RFC4302:
+    RFC6830:
     RFC8200:
 informative:
     I-D.irtf-icnrg-ccnxsemantics:
@@ -71,36 +72,53 @@ informative:
 
 --- abstract
 
-This documents describes
+This documents describes the hybrid information-centric networking (hICN) architecture
+for IPv6. The specifications describe a way to implement information-networking functionalities
+into IPv6. The objective is to use IPv6 without creating overlays with a new packet
+format as an additional encapsulation. The intent of the present design is 
+to  introduce some IPv6 routers in the network with additional packet processing operations to
+implement ICN functions. Moreover, the current design is tightly integrated into IPv6 to 
+allow easy interconnection to IPv6 networks with the additional design objective to exploit 
+existing IPv6 protocols as much as possible as they are, or extend them where needed.
 
 --- middle
+
 
 # Introduction
 The  objective of this document is to describe hybrid ICN, a network protocol 
 that integrates ICN in IPv6, at a minimum cost in terms of required modifications 
 in end-points and routers and in a way to guarantee transparent interconnection 
 with IP without using overlays.
-
+	
 The ICN reference design used in this document is CCNx as  described in
 {{I-D.irtf-icnrg-ccnxsemantics}} and {{I-D.irtf-icnrg-ccnxmessages}}. 
-IPv6 is used unchanged as described in {{RFC8200}}.
+IPv6 is used as described in {{RFC8200}}.
 
-There are some basic principles behind the hICN architecture: (i) 
-the network can transport many different kinds of applications, i.e. hICN can serve
+There are some basic design principles behind the hICN architecture that are 
+implemented by the design reported below that can be summarized as follows:
+
+- (i)  the network can transport many different kinds of applications as IPv6, i.e. hICN can serve
 content-distribution or real-time applications, to cite examples
-of applications with very different requirements. hICN (ii)  offers connection-less
-and location independent communications by identifying data with unambiguous
-names, instead of naming network interfaces or end-hosts. (iii) Data is retrieved 
+ with very different requirements. hICN is not a content-distribution network;
+
+- (ii)  it provides connection-less
+and location independent communications by identifying data with unique
+global names, instead of naming network interfaces (locator) or end-hosts (end-host identifiers)
+as in LISP {{RFC6830}}.
+
+- (iii) data is retrieved 
 by an end-point by issuing requests and a
 node accepts a data packet from an ingress interface if and only if at least 
-one matching request packet is stored in the local cache of the node otherwise
-the data packet is dropped. (iv) Basic security services are provided
-by the architecture: a cryptographic signature across a security envelop 
+one matching request packet is stored in the local cache of the node, otherwise
+the data packet is dropped;
+
+- (iv) basic security services are provided
+by the architecture: authenticity of the data producer and data integrity.
+A cryptographic signature over a security envelop 
 is computed by the producer (using its own private key) and must be verified by the consumer 
-(using the producer public key).
-The security envelop cab be as fine grained as a single data packet or 
-can also be made on groups of packets using the technique of the transport manifest.
-The security service provides data integrity and producer authenticity.
+(using the producer's public key).
+The security envelop can be as small as a single data packet or 
+cover groups of packets using the technique of the transport manifest {{MAN}}.
 
 # Architecture
 The communication model described in this document covers the transport
@@ -566,11 +584,16 @@ each data packet. Integrity and data-origin authenticity qre provided in two way
 using two approaches: the first one based on IP Authenticated Header
 {{RFC4302}} and the second one based on transport manifests.
 Notice that the IP AH is not used as an IPv6 extension header as it is appended
-after the transport header. 
+after the transport header. However the choice of the IP AH has been made
+in order to exploit existing protocol implementations in the end-points.
 
-When using IP AH, the signature is computed over (i)IP or extension
+When using IP AH, the signature is computed over 
+
+- (i)IP or extension
 header fields either immutable in transit or that 
-are predictable in value upon arrival at the consumer, (ii) the AH
+are predictable in value upon arrival at the consumer, 
+
+- (ii) the AH
 header with the signature field set to zero. We recall that in hICN
 the destination header field is not immutable nor predictable and must be set
 to zero for the signature computation. We also point out 
@@ -612,7 +635,8 @@ network devices such as middleboxes.
 The transport manifest  is a L4 entity computed 
 at the producer which contains the list of names of a group of data packets to convey 
 to  the consumer. hICN cryptographic hashes of data packets are then computed instead 
-of signatures. However, the manifest must be signed to guarantee a level of security 
+of signatures. The hashes are computed on immutable fields as explained above when using the
+IP AH. Moreover, the manifest must be signed to guarantee a level of security 
 equivalent to packet-wise signatures.
 
 hICN is oblivious of the trust model adopted by consumers and works with 
@@ -679,4 +703,4 @@ There are no IANA considerations in this specification.
 
 # Acknowledgements 
 The authors would like to thank David Ward, David Oran, Paul Polakos, Mark Townsley
-for suggestion on how to improve the architecture and the current document.
+for suggestions on how to improve the architecture and the current document.
