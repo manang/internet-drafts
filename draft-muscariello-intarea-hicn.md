@@ -121,6 +121,42 @@ The security envelop can be as small as a single data packet or
 cover groups of packets using the technique of the transport manifest {{MAN}}.
 
 # Architecture
+~~~
++---------------------+
+|                     | Data packets
+| End-host            |           +-----------+          +-----------+
+|                     +------->   |           |          |           |
+| +------------+      |           |   IPv6    |          |   hICN    |
+| | Producer   |      +-----------+   router  +----------+   router  |
+| | end-point  |      |           |           |          |           |
+| +------------+      | <------+  +----+------+          +------+----+
+|                     |                |                        |
++---------------------+  Interest      |                        |
+                         packets       |                        |
+                                       |                        |
+                                       |                        |
+                                       |                        |
+                                  +----+------+            +----+------+
+                                  |           |            |           |
+                                  |   hICN    |            |   IPv6    |
+                 +----------------+   router  +------------+   network |
+         +   ^   |                |           |            |           |
+         |   |   |                +-----------+            +--------+--+
+         |   |   |                                                  |
+         v   |   |                                                  |
+             |   |                                                  |
+    +---------------------+    Interest packets                     |
+    | +------------+      | +-------->            +-----------+     |
+    | | Consumer   |      |                       |           |     |
+    | | end-point  |      +-----------------------+   hICN    +-----+
+    | +------------+      |                       |   router  |
+    |                     |    <-------+          |           |
+    | End-host            |                       +-----------+
+    |                     |     Data packets
+    +---------------------+
+~~~
+{: #fig-general-arch title="General overview of an hICN end-to-end communication."}
+
 The communication model described in this document covers the transport
 and the network layer.
 
@@ -250,13 +286,14 @@ in a different document.
 ### Name prefix
 The format of an hICN name prefix is the following:
 
-~~~~~~~~~~
+~~~
 |            64 bits             |        64 bits                |
 +--------------------------------+-------------------------------+
 |           routable prefix      |       data identifier         |
 +----------------------------------------------------------------+
       
-~~~~~~~~~~
+~~~
+{: #fig-name-prefix title="hICN IPv6 name prefix."}
 
 It is composed of a routable IPv6 /64 prefix as per {{RFC3587}} which
 SHOULD be globally routable. The data identifier is encoded in 64 bits.
@@ -275,14 +312,14 @@ depending on the use case. An MTU path discovery protocol for hICN is out of
 scope of this document and additional work is required to extend existing protocols
 or design new ones.
 
-~~~~~~~~~~
+~~~
             |            32 bits         | 
             +-----------------------------
             |           name suffix      |      
             +-----------------------------
       
-~~~~~~~~~~
-
+~~~
+{: #fig-name-suffix title="hICN name suffix."}
 
 ## Packet Format
 Two protocol data units are defined below: the interest (request)
@@ -294,7 +331,7 @@ the same for both packet types while the network header is slightly different.
 
 ### Interest Packet 
 
-~~~~~~~~~~
+~~~~
 
 0                   1                   2                   3
 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
@@ -320,8 +357,8 @@ the same for both packet types while the network header is slightly different.
 |                                                               |
 +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
                   Interest Packet Header Format
-~~~~~~~~~~
-
+~~~~
+{: #fig-interest title="IPv6 interest packet L3 header."}
 
     Source Address:       128-bit address of the originator of the packet
                           (possibly not the end-host but a previous hICN node).
@@ -359,13 +396,14 @@ the same for both packet types while the network header is slightly different.
 +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
                   Interest Packet Header Format
 ~~~~
+{: #fig-data title="IPv6 data packet L3 header."}
 
     Name Prefix:          128-bit name prefix of the intended service.
     
     Source Address:       128-bit address of the destination of the packet
                           (possibly not the end-host but the next hICN node).
 
-~~~~
+~~~
 
 0                   1                   2                   3
  0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
@@ -382,7 +420,8 @@ the same for both packet types while the network header is slightly different.
 +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 |           Checksum            |             Lifetime          |
 +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-~~~~~~~~~~
+~~~
+{: #fig-transport title="Transport header for data and interest packets."}
 
     Name Suffix:       32-bit name-suffix of the packet  
                        (possibly not the end-host but a previous hICN node).
@@ -488,6 +527,7 @@ Polymorphism is transparent for the forwarding plane while it has several implic
 <---------+ <----+     |  
           +------------+
 ~~~~
+{: #fig-interest-data-hit title="The interest packet hits a matching data packet in the packet cache."}
 
 
 ~~~~
@@ -501,7 +541,7 @@ Polymorphism is transparent for the forwarding plane while it has several implic
           +----------------+    +--------+
           
 ~~~~
-
+{: #fig-interest-data-interest-miss title="The interest packet finds no match in the packet cache and is processed to find a next-hop."}
 
 ~~~~
                                  Same src addr
@@ -518,7 +558,7 @@ Interest |              |        +-----^-----+
                                  Different src addr
           
 ~~~~
-
+{: #fig-interest-hit title="The interest packet hits an interest packet in the packet cache."}
 
 ### Data Path
 At the router ingress the incoming data packet D is parsed to obtain the name prefix and the name suffix.
@@ -532,13 +572,7 @@ Based on the outcome of the lookup the following options are possible:
     next-hop.
 2. No matching is an interest packet and the D is dropped.
 
-### Additional packet processing
-
-
-
-
-
-~~~~
+~~~
     RX
     Data   +-----------+
 +--------> | Interest  |
@@ -562,17 +596,18 @@ Based on the outcome of the lookup the following options are possible:
 
 
 
-~~~~
+~~~
+{: #fig-data-hit title="The data packet hits an interest packet in the packet cache."}
 
-~~~~
+~~~
 
   RX             Packet Cache
   Data      +------------------+ Drop Data
 +---------->+   Interest Miss  +------>
             |   OR Data hit    |
             +------------------+
-~~~~
-
+~~~
+{: #fig-data-no-hit title="The data packet is drop in case no interest match is found in the packet cache."}
 
 # Security
 hICN inherits ICN data-centric security model:
@@ -600,7 +635,7 @@ to zero for the signature computation. We also point out
 the AH in placed after the TCP header in order to prevent any kind of filtering from
 network devices such as middleboxes.
 
-~~~~~~~~~~
+~~~
 0                   1                   2                   3
  0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
 +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -617,7 +652,9 @@ network devices such as middleboxes.
 /                           Signature                           /
 /                                                               /
 +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-~~~~~~~~~~
+~~~~
+{: #fig-ah title="The IP authentication header appended after the transport header to carry packet signatures."}
+
 
     ValidAlg:          8-bit index to indicate which validation algorithm
                        must be used to verify the signature. 
@@ -643,7 +680,7 @@ hICN is oblivious of the trust model adopted by consumers and works with
 any of the existing proposals. 
     
 
-~~~~~~~~~~
+~~~~
 0                   1                   2                   3
  0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
 +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -670,8 +707,10 @@ any of the existing proposals.
 |                                                               |
 +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 
+~~~~
+{: #fig-man title="The transport manifest, generated by the producer end-point for the consumer end-point, contains names, integrity hashes and is signed with the producer end-point private key"}
 
-~~~~~~~~~~
+
     Version:          8-bit index to indicate which validation algorithm
                       must be used to verify the signature. 
 
