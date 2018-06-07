@@ -1,13 +1,13 @@
 ---
 title: Hybrid Information-Centric Networking
 abbrev: hICN
-docname: draft-muscariello-intarea-hicn
+docname: draft-ietf-muscariello-intarea-hicn
 date:
 category: info
 
 ipr:
-area:
-workgroup:
+area: Internet Area
+workgroup: Internet Area WG
 keyword: Internet-Draft
 
 stand_alone: yes
