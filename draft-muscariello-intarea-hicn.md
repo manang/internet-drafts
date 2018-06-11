@@ -35,11 +35,7 @@ author:
     name: Michele Papalini
     org: Cisco Systems Inc.
     email: mpapal@cisco.com
--
-    ins: M. Sardara
-    name: Mauro Sardara
-    org: Cisco Systems Inc.
-    email: msardara@cisco.com
+
 
 normative: 
     RFC0793:
@@ -736,5 +732,5 @@ any of the existing proposals.
 There are no IANA considerations in this specification.
 
 # Acknowledgements 
-The authors would like to thank David Ward, David Oran, Paul Polakos, Mark Townsley
+The authors would like to thank David Ward, David Oran, Paul Polakos, Mark Townsley, Mauro Sardara and Alberto Compagno
 for suggestions on how to improve the architecture and the current document.
