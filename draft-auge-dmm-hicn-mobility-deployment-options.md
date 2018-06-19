@@ -50,7 +50,7 @@ informative:
     author:
       - org: 3rd Generation Partnership Project (3GPP)
     date: 2017
-  I-D.auge-hicn-mobility:
+  I-D.auge-dmm-hicn-mobility:
     title: "Anchorless mobility through hICN principles"
     author:
     -
@@ -94,7 +94,7 @@ informative:
 
 --- abstract
 
-A novel mobility management approach is described in {{I-D.auge-hicn-mobility}},
+A novel mobility management approach is described in {{I-D.auge-dmm-hicn-mobility}},
 that leverages routable location-independent identifiers (IDs) and an
 Information-Centric Networking (ICN) communication model integrated in IPv6,
 (also referred to as Hybrid ICN, hICN, {{?I-D.muscariello-intarea-hicn}}.
@@ -145,7 +145,7 @@ recently of pure ID-based approaches inspired from name-based
 Information-Centric Networking (ICN) architectures.
 
 The focus of this document is on the latter category of solutions and more
-precisely on the hICN-AMM proposal in {{I-D.auge-hicn-mobility}}, that aims at a
+precisely on the hICN-AMM proposal in {{I-D.auge-dmm-hicn-mobility}}, that aims at a
 simplified anchorless mobility management through Hybrid ICN (hICN), a
 fully-fledged ICN architecture in IPv6 {{?I-D.muscariello-intarea-hicn}}.
 
@@ -171,7 +171,7 @@ security policies.
 An overview of ICN principles and advantages for a simplified mobility
 management resulting from name-based forwarding can be found in {{!RFC7476}},
 while a detailed description of the proposal is presented in
-{{I-D.auge-hicn-mobility}}.
+{{I-D.auge-dmm-hicn-mobility}}.
 
 In this document, we discuss the integration of hICN-AMM proposal within an
 existing mobile network architecture and analyze the resulting tradeoffs in
