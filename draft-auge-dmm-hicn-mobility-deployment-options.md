@@ -197,22 +197,22 @@ We might have to reduce this figure down to 72 chars to fit I-D requirements
 -->
 
 ~~~~
-                 , - ~ - ,              , -~ - ,              , -~ - ,
-Cell site    , '           ' ,      , '          ' ,      , '          ' ,
-    __     ,                   ,__,                   ,__,                  ,
- __/ A\   ,                    /X/|                   /X/|                   ,
-/ A\__/  __       IP edge      |_|/    IP backhaul    |_|/      IP core      __
-\__/ A\ /X/|                   , ,                    , ,                   /X/|
-/ A\__/ |_|/      network      ,__       network      ,__       network     |_|/
-\__/ A\  |,                    /X/|                   /X/|                   |
-   \__/  | ,                   |_|/,                  |_|/,                 ,|
-         |   ,              , ' |   ,             , '' |   ,             , ' |
-         |     ' - , _ ,  '     |     ' - ,_ ,  '      |     ' - ,_ ,  '     |
-       +-+-+                  +-+-+                  +-+-+                 +-+-+
-       |   |                  |   |                  |   |                 |   |
-       |DDC|                  |DDC|                  |DDC|                 |DDC|
-       |   |                  |   |                  |   |                 |   |
-       +---+                  +---+                  +---+                 +---+
+                 , - ,              , - ,              , - ,
+Cell site    , '       ' ,      , '       ' ,      , '       ' ,
+    __     ,               ,__,                ,__,               ,
+ __/ A\   ,                /X/|                /X/|                ,
+/ A\__/  __     IP edge    |_|/  IP backhaul   |_|/    IP core     __
+\__/ A\ /X/|               , ,                 , ,                /X/|
+/ A\__/ |_|/    network    ,__     network     ,__     network    |_|/
+\__/ A\  |,                /X/|                /X/|                |
+   \__/  | ,               |_|/,               |_|/,              ,|
+         |   ,          , ' |   ,          , '' |   ,          , ' |
+         |     ' - ,  '     |     ' - ,  '      |     ' - ,  '     |
+       +-+-+              +-+-+               +-+-+              +-+-+
+       |   |              |   |               |   |              |   |
+       |DDC|              |DDC|               |DDC|              |DDC|
+       |   |              |   |               |   |              |   |
+       +---+              +---+               +---+              +---+
 ~~~~
 {: #fig-mobile-network title="Overview of a typical mobile network architecture" }
 
@@ -395,14 +395,14 @@ beneficial both in terms of mobility and of local loss recovery, as a lost
 packet would be fast retransmitted directly from local hICN instance.
 
 ~~~~
- tunnelled
- non-3GPP radio    +------+   N3
- e.g. WiFi +-------+ N3IWF+---------+                             hICN
-          /        +------+          \                              +
-         /                            \                             |
-    +---+---+      +-------+  N3  +---+---+  N9  +---+---+  N6  +---+---+
-    |  UE   +------+  gNB  +------+ UL/CL +------+  UPF  +------+  DN   +
-    +-------+      +-------+      +---+---+      +-------+      +-------+
+tunnelled non-3GPP radio
+(e.g. WiFi)   +------+  N3
+       +------+ N3IWF+-------+                         hICN
+      /       +------+        \                          +
+     /                         \                         |
++---+---+     +-------+ N3 +---+---+ N9 +---+---+ N6 +---+---+
+|  UE   +-----+  gNB  +----+ UL/CL +----+  UPF  +----+  DN   +---+ hICN
++-------+     +-------+    +---+---+    +-------+    +-------+
 ~~~~
 {: #fig-hicn-wifi title="Example of a UE connection to two local radio accesses"}
 
@@ -421,14 +421,14 @@ simultaneously from two distinct sources, for instance local caches behind each
 radio access.
 
 ~~~~
- tunnelled
- non-3GPP radio  +------+   N3  +-------+  N9  +-------+  N6  +-------+
- e.g. WiFi +-----+ N3IWF+-------| UL/CL +------+  UPF  +------+  DN   +--+ hICN
-          /      +------+       +-------+      +-------+      +-------+
-         /
-    +---+---+    +-------+  N3  +-------+  N9  +---+---+  N6  +---+---+
-    |  UE   +----+  gNB  +------+ UL/CL +------+  UPF  +------+  DN   +--+ hICN
-    +-------+    +-------+      +---+---+      +-------+      +-------+
+tunnelled non-3GPP radio
+(e.g. WiFi)  +-------+ N3 +-------+ N9 +-------+ N6 +-------+
+       +-----+ N3IWF +----| UL/CL +----+  UPF  +----+  DN   +----+ hICN
+      /      +-------+    +-------+    +-------+    +-------+
+     /
++---+---+    +-------+ N3 +-------+ N9 +---+---+ N6 +---+---+
+|  UE   +----+  gNB  +----+ UL/CL +----+  UPF  +----+  DN   +----+ hICN
++-------+    +-------+    +---+---+    +-------+    +-------+
 ~~~~
 {: #fig-hicn-multisource title="Multi-source communication with hICN"}
 
@@ -471,20 +471,19 @@ NFV environments, for instance within a container (see {{fig-hicn-sba-upf}}.
 This solution has the advantage of preserving the interface with the 3GPP
 control plane, including support for slicing or QoS.
 
-
 ~~~~
-      +------------------+          +------------------+
-      |        AMF       |          |        SMF       |
-      +-+--------------+-+          +-+--------------+-+
-        |              |              |              |
-        | N1           | N2           | N4           | N4
-        |              |              |              |
-    +---+---+      +---+---+  N3  +---+---+  N9  +---+---+  N6  +-------+
-    |  UE   +------+  gNB  +------+  UPF  +------+  UPF  +------+  DN   |
-    +-------+      +-------+      +-------+      +-------+      +-------+
-                                     ^                ^
-                                     |________________|
-                                       hICN insertion
+  +------------------+          +------------------+
+  |        AMF       |          |        SMF       |
+  +-+--------------+-+          +-+--------------+-+
+    |              |              |              |
+    | N1           | N2           | N4           | N4
+    |              |              |              |
++---+---+      +---+---+  N3  +---+---+  N9  +---+---+  N6  +-------+
+|  UE   +------+  gNB  +------+  UPF  +------+  UPF  +------+  DN   |
++-------+      +-------+      +-------+      +-------+      +-------+
+                                 ^                ^
+                                 |________________|
+                                   hICN insertion
 ~~~~
 {: #fig-hicn-sba-upf title="hICN insertion inside UPFs }
 
@@ -514,15 +513,15 @@ traffic with respect to a traditional end-to-end recovery approach. Such feature
 could be fundamental for low-latency reliable services.
 
 ~~~~
-                                   +-- Loss Detection and Recovey
-                                   V
-                 +------+   N3  +-------+
-           +-----+ N3IWF+-------| hICN  |
-          /      +------+       +---+---+
-         /                       N9 |
-    +---+---+    +-------+  N3  +---+---+  N9  +---+---+  N6  +---+---+
-    |  UE   +----+  gNB  +------+  UPF  +------+  UPF  +------+  DN   +--+ hICN
-    +-------+    +-------+      +---+---+      +-------+      +-------+
+                             +-- Loss Detection and Recovey
+                             V
+             +-------+ N3 +-------+
+       +-----+ N3IWF +----| hICN  |
+      /      +-------+    +---+---+
+     /                     N9 |
++---+---+    +-------+ N3 +---+---+ N9 +---+---+ N6 +---+---+
+|  UE   +----+  gNB  +----+  UPF  +----+  UPF  +----+  DN   +----+ hICN
++-------+    +-------+    +---+---+    +-------+    +-------+
 ~~~~
 {: #fig-hicn-wldr title="In-network loss detection and recovery with hICN"}
 
