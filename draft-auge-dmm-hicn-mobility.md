@@ -573,11 +573,8 @@ The next section will discuss more in depth the following advantages
 ## Simplicity, scalability, efficiency
 
 As emerges from the points raised in the previous section, consumer mobility is
-transparently supported by an hICN network in virtue of the pull-based model and
-stateful forwarding state in packet-caches. The only requirement is to have a
-compatible transport layer able to cope with multihoming, multipath and
-multisource characteristics ofhICN data transfers.
-
+transparently supported by an hICN network in virtue of the pull-based model and the
+way the forwarding path works. 
 After moving, a consumer can just reissue pending interests once attached to the
 new access router at layer 2, without requiring any more information from L3 and
 above. This ensures a fast and simple handover, which can be further enhanced
@@ -586,12 +583,12 @@ fully anchorless with hICN, and does not incur any signalization nor tunneling
 overhead.
 
 This is particularly interesting considering that most mobile users are
-consumers only (eg. linear video distribution, or large scale video conferencing
+consumers only (e.g. linear video distribution, or large scale video conferencing
 where we typically have few presenters and most users are simply consumers).
 
 Another aspect of using the unifying hICN architecture in replacement of the
-traditional tunnel-based mobile core is that it remove the need to maintain
-state for consumers and producers which are not mobile (eg. iOT sensors), or not
+traditional tunnel-based mobile core is that it removes the need to maintain
+state for consumers and producers which are not mobile (eg. IoT sensors), or not
 currently moving.
 
 
@@ -802,7 +799,6 @@ possible to offer reliable WiFi connectivity, besides its lossy nature as
 observed in previous use case and besides the frequency of mobility from one
 network access to the other.
 
-Example of live video streaming edge to edge in MWC'16 demo ?
 
 ## Bandwidth aggregation with consumer multihoming
 
@@ -811,7 +807,7 @@ load-balancing forwarding strategy at the client, with no a priori knowledge of
 paths. This is done similarly in the network by hICN forwarders, allowing a
 combination of multi-homing, multipath and multi-source data transfers. As all
 the paths are used at the same time, hICN offers the full network capacity to the
-users and tends to smoothen fluctuations due to the radio channels.
+users and tends to smooth fluctuations due to the radio channels.
 
 Over an heterogeneous network access, hICN also offers a simple and
 cost-effective realization of heterogeneous channel bonding allowing an user to
@@ -914,7 +910,7 @@ C         P         AR1        AR2        AR3         GW  X    Internet
 |<--------|----------|----------|----------|          |   X         |
 |         |          |          |          |          |   X         |
 ~~~~
-{: #fig-disconnected title="Anchoress mobility in network disconnected from core"}
+{: #fig-disconnected title="Anchorless mobility in network disconnected from core"}
 
 We see that both the data and the signalization remain local to the zone where
 the mobility occurs, and that communications during mobility are not affected by
@@ -927,43 +923,16 @@ compute capacity in the mobile core. A direct consequence is also a more robust
 and reliable network.
 
 
-<!--
-Classification in {{XXX}}, further refined in {{XXX}}: Routing-based (RT),
-Resolution-based (RB), Anchor-based (AB), Tracing-based (TB), Anchorless (AL)
-
-                RT      RB      AB      TB      AL
-FW      UP      N       N(1)    Y       N(2)    N
-        CP      N       Y       Y       Y(3)    N
-
-(1) those solution are generally denoted anchorless as they consider the use of
-caches (push or pull model), not including the fact that a packet might be
-delayed during resolution, or directed through a mapping service in case of
-cache miss.
-
-(2) anchorless if the path cross a trace (not clear what happends when an
-        outdates trace is found), otherwise, might go through the anchor
-
-we might want to comment all this
-eg kite send control traffic towards a locator
-mapme sends control traffic towards an identifier, not early binding of where
-the special interst will go and it is dynamically adjusted based on concurrent
-routing or mobility updates -->
-
-<!-- metrics
-overhead when producer is static, has relocated
-scalability
--->
-
 # Discussion
 
 ## Scope
 
 Both consumer and producer mobility support multiple paths, however the support
-of mobility for a multihomed produced, is to be documented in further study.
+of mobility for a multihomed producer, is left for future updates of the present
+document.
 
 Similarly, the proposed producer mobility solution is appropriate for the
-management of micro-mobility; its extension to multiple domains has to be the
-subject of further study.
+management of micro-mobility; its extension to multiple domains is out of scope.
 
 ## Interaction with non-hICN enabled routers
 
@@ -990,55 +959,6 @@ context. A proper security scheme is certainly the right way to address this
 problem, and we believe the set of benefits that we have listed are worth
 reconsidering such aspects.
 
-<!--
-Alternatively, it is possible to reuse other existing data plane protocols that are more directly
-applicable, such as RSVP, AODV or OLSR.
--->
-
-<!--
-## Impact on transport protocols
-
-Years of scientific research have made it clear that designing efficient
-transport protocols suitables for diverse environments in a challenging task.
-This in particular the case for the dynamic and mobile environments we are
-considering in this draft.
-
-In future generation networks, mobility has to be understood in the broad term
-due the higher level of expectations:
-
-- the ability to switch, possibly at high frequency, between heterogeneous access
-medium, whose network characteristics such as latency or bandwidth can be
-radically different.
-- the possibility to aggregate bandwidth from the same access technologies, and
-offer aggregated bandwith.
-- more generally, the ability to establish multipoint-to-multipoint connections,
-using a combination of multipath, multi-homing, and multi-source patterns in
-order to exploit available resources best.
-
-This situation is natively supported by the underlying hICN network. However, it
-is clearly not favourable to most congestion control protocols such as TCP,
-which expect a relatively stable connection between two endpoints. We have a
-full history of work suggesting this is a tedious task given the amount of
-available feedback we have today from the network (end-to-end packet losses or
-delay, for instance).
-
-This suggests that we cannot simply design the data plane and mobility protocols
-without thinking about their requirements, and more importantly, the interface
-they will offer to the higher transport layers to allow for efficient use. This
-is especially important since the use of identifiers in application will further
-mask the multiple connections, and their change during the course of a data
-transfer.
-
-In this document, we assume the use of a compatible protocol. While they are
-still subject to much research, the ICN community has already designed a couple
-of candidates {{SURVEYCC}}.
-
-One outcome of such research is that it is important for the network to provide
-upper layers with implicit or explicit feedback about the state of the paths
-between consumers and producers, or to some extend, in-network support for
-managing losses on behalf on the transport protocol, such as caching, or the
-more advanced mechanisms proposed in {?carofiglio2016wldr}.
--->
 
 ## Security considerations {#sec-security}
 
@@ -1053,12 +973,6 @@ headers {{!RFC4302}}, or SEND {{!RFC3971}} (and its proxy extensions {{!RFC6496}
 Alternatively, {{SEC}} has reviewed standard approaches from the
 literature and proposes a fast, lightweight and distributed approach that
 can be applied to MAP-Me and fits its design principles.
-
-
-# Acknowledgements
-
-
-# Contributors
 
 
 # IANA Considerations {#iana}
