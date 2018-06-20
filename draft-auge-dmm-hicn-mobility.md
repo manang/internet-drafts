@@ -843,14 +843,6 @@ Fine grained control from the application allows fully exploiting available
 bandwidth, resulting in an aggregated throughput equal to the sum of access
 throughputs, which is hard to achieve with existing solutions.
 
-Experiments with DASH video streaming comparing per-packet and per-segment load
-balancing strategies as would be the case with MPTCP, where load-balancing is
-performed at the application granularity), have shown that only in the first
-case the client is able to exploit the aggregated bandwidth available on each
-path. Per-segment load balancing is not better than downloading on a single
-path. This has been previously observed in the literature. Multiple source
-streaming would offer the same guarantees, and are typically not possible with
-solutions such as MPTCP.
 
 ## Traffic and signalization offload
 
