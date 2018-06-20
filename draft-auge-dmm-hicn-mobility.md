@@ -1,0 +1,1257 @@
+---
+title: "Anchorless mobility through hICN"
+docname: draft-auge-dmm-hicn-mobility
+date:
+category: info
+
+ipr:
+area: general
+workgroup: DMM Working Group
+keyword: Internet-Draft
+keyword: Information-Centric Networking
+keyword: Hybrid ICN
+
+stand_alone: yes
+pi: [toc, sortrefs, symrefs]
+
+author:
+
+-
+    ins: J. Augé
+    name: Jordan Augé
+    org: Cisco Systems Inc.
+    email: augjorda@cisco.com
+-
+    ins: G. Carofiglio
+    name: Giovanna Carofiglio
+    org: Cisco Systems Inc.
+    email: gcarofig@cisco.com
+-
+    ins: L. Muscariello
+    name: Luca Muscariello
+    org: Cisco Systems Inc.
+    email: lumuscar@cisco.com
+-	
+    ins: M. Papalini
+    name: Michele Papalini
+    org: Cisco Systems Inc.
+    email: micpapal@cisco.com
+    
+  
+informative:
+  MAPME: DOI.10.1109/TNSM.2018.2796720
+  SURVEY1: DOI.10.1109/INFCOMW.2016.7562050
+  SURVEY2: DOI.10.1186/s13638-016-0715-0
+  SURVEYICN: DOI.10.1145/2248361.2248363
+  SURVEYCC: DOI.10.1016/j.comcom.2016.04.017
+  KITE: DOI.10.1145/2660129.2660159
+  SEC: DOI.10.1145/3125719.3125725
+  ravindran20175g: DOI.10.1109/MCOM.2017.1600938
+  TS23.501:
+    title: Technical Specification Group Services and System Aspects; System Architecture for the 5G System (Rel.15)
+    author:
+      - surname: 3gpp-23.501
+    series:
+      name: 3GPP
+      value: ""
+  TS29.274:
+    title: 3GPP Evolved Packet System (EPS); Evolved General Packet Radio Service (GPRS) Tunnelling Protocol for Control plane (GTPv2-C); Stage 3
+    author:
+      - surname: 3gpp-29.274
+    series:
+      name: 3GPP
+      value: ""
+
+--- abstract
+
+TODO
+
+--- middle	
+
+
+# Introduction
+Mobility has become a basic feature of network communications. Fueled by rapid advances in
+mobile technology and by the increasing digitization of network edge, mobile traffic has driven
+overall Internet traffic growth in the last years and such trend is expected to continue.
+
+However, mobility was not considered in the original IP network design. Current
+solutions provide mobility support by means of overlays added on top of the
+network as an afterthought. Notable examples are IETF Mobile IP and its variants
+{{!RFC3344}} and {{!RFC3775}} 3GPP GTP-based architecture {{TS29.274}}, both
+based on tunnelling and encapsulation.
+
+With the growth of new usages such as mobile video, AR/VR or vehicular
+networking, mobile networks are more challenged than ever, and the currently
+cetnralized architectures are showing their limits in terms of performance and
+scalability. The recent years have seen interesting efforts (cfr. DMM WG at IETF)
+aiming at optimizing existing protocols by means of distribution of the data plane
+at the netork edge. Also, there is an ongoing liaison between IETF and  3GPP to
+explore newly defined protocol candidates for 5G architecture.
+
+There is an agreement of what should be the key design principles of this next
+generation mobile network, such as the separation of control and data planes,
+the unification of different networks with mobility now being a first
+class citizen, the simplication and the avoidance of tunnels and central anchors.
+In addition, the choice of the design shall be influenced by the evolution
+possibilities it offers in term of traffic engineering and new usages such as
+virtualization, mobile-edge computing etc.
+
+One identified difficulty in proposing mobility models in IP lies in the
+semantic overloading of IP addresses which are both host identifiers, and
+locators used for routing. Starting with LISP, the identifier/locator split
+paradigm has shown promising results in virtue of its scalability properties with respect
+to routing tables entries, and the possibilities it offers in terms of mobility.
+Several solutions have been proposed around this concept, namely ILNP, ILSR, and ILA.
+
+In  this document, we suggest to take loc/ID separation concept one step further
+by completely removing identifiers and routing packet based on network names.
+The draft proposes a mobility approach based on native ID-oriented networking
+(as called in draft-vonhugo-5gangip-ip-issues-03), by applying
+Information-Centric Networking (ICN) principles.
+
+
+ICN has been pointed out as a potential candidate for addressing mobility in a simplified and more flexible way,
+as a result of its information-aware network layer, but also of a its connectionless received-based
+transport layer which enables a dynamic name-based forwarding plane completely decoupling data delivery from underlying network connectivity (put refs).
+
+
+ICN was however until recently deemed not ready for
+currently deployments due to the lack of a deployment path in today's network.
+We believe this should now be reconsidered in the light of a new deployment
+model, namely Hybrid ICN (hICN), which proposes a full-feature ICN deployment
+within IPv6, only trading-off variable length names for names encoded as IPv6
+addresses.
+
+The rest of the draft will analyze more in-depth those mobility considerations
+in hICN, comparatively with state-of-the-art solutions, and highly how the
+solution should allow for the expected performance from future networks, paving
+the way for innovation  and new applications, while keeping the simplicity and
+end-to-end design of the current internet. hICN has the interesting ability to
+offer seamless and anchorless mobility by design, to include a compatible
+transport naturally supporting multipath, multi-source and mobility across
+heterogenous network to name a few.
+
+We conclude by a discussion of the integration of hICN in current network
+architectures, and its possible interplay with complementary data plane
+solutions such as SRv6, further leveraging the IPv6 network deployments already
+existing in ISP's networks.
+
+
+# Terminology
+<!-- On the use of identifiers and locators in communication paradigms, and
+mobility management, characteristics of the resulting architectures: anchorless -->
+
+## Locators and identifiers
+
+In this document, we distinguish different possible usages of an IP address, either as
+a *locator*, to refer to the identifier of an interface in the network,
+or as a (location-independent) *identifier*, i.e. a name, to denote a stable
+identifier for a host of a data source, not affected by node mobility and relocation.
+
+{{!RFC1498}} and {{!RFC2101}} discusses the usage of locators and identifiers in
+IP architectures to conclude about the ambiguous role of IP addresses in
+operational usage today, that tends to be used mostly as locators. For
+simplicity, we will refer to the traditional architecture as locator-based, as opposed 
+to more recent proposals such as "Loc/ID split", or more recent pure ID-based or 
+name-based architectures.
+
+## Anchors and anchorless mobility
+
+Because they are intrinsically bound to the topological location of a node,
+session established through locators require additional mechanisms to support
+mobility, including the presence of anchor points in the network. The notion of
+*anchor* and the resulting *anchorless* properties of mobility schemes are prone
+to different interpretation depending on the context. The following definitions
+attempt to reconcile those interpretations and propose a unifying terminology
+used throughout this document.
+
+Anchor
+: An anchor refers to a specialized node or service, possibly distributed,
+functionally required by a network architecture for forwarding or mobility. This
+is in contrast to decentralized architectures. Configuration of these
+anchors, including their location, will directly affect the overall scheme
+performance. We follow the classic distinction between control plane and user
+(or data, or forwarding) plane to distinguish control-plane anchors and
+user-plane anchors.
+
+
+User-plane anchor
+: An user-plane anchor is a node through which traffic is forced to pass, either
+because there is an explicit mention of the locator in packet headers, or
+simply for this node has been advertising other nodes prefixes to act as an
+attraction point. An example of such anchor is the indirection point in Mobile
+IP.
+
+Control-plane anchor
+: A control-plane anchor refers to a node whose is not responsible for carrying
+traffic, but who is needed for the operation of the forwarding and/or the
+mobility architecture. An example of such anchor is the resolution or mapping
+service of LISP. We remark that while not being on path, such anchors might
+affect the performance of the user-plane due to resolution delays or indirection
+(following a mapping cache miss for instance).
+
+Anchorless
+: This term qualifies approaches that do not involve any user-plane not
+control-plane anchor.
+
+
+# Towards locator-independent network architectures
+
+We distinguish network architectures based on their use of identifiers and
+locators for forwarding.
+
+__Locator-based architectures__
+
+As mentioned earlier, IP architectures are typically operated based on locators
+correponding to the IP addresses of the host interfaces in their respective
+network attachment, used also as session identifiers. This results in a complex
+mobility architecture built on top, involvin traffic anchors and tunnels to
+preserve the identifier exposed to the transport layer: IP/IP or GRE tunnels in
+Mobile IP, and GTP tunnels in 3GPP architectures.
+
+The limitations of locator-based schemes in terms of complexity, overhead and
+efficiency are well-recognized and led to new alternatives to be considered.
+
+__Locator-ID separation architectures__
+
+LISP {{!RFC6830}} was the first proposal to distinguish between the usage of IP
+addresses as locators or identifiers by explicitely defining two namespaces,
+respectively used for endpoint identification and forwarding. A mapping service
+is further used to bind an identifiers to a given location, and updated after
+mobility. From there, several approaches have been defined, either host-based
+like SHIM6 {{!RFC5533}} or HIP {{!RFC4423}}), or network-based, like LISP, ILSR,
+ILNP or ILA to cite a few.
+	
+An overview of these approaches and their use in mobility is presented in
+{?I-D.bogineni-dmm-optimized-mobile-user-plane}}.
+
+The main challenge consists in maintaining a (distributed) mapping service at
+scale, including the synchronization of local caches required for scalability
+and efficiency.
+
+__ID-based architectures__
+
+A third class of approaches exists that redefines IP communication principles
+(i.e. network and transport layers) around location-independent network
+identifiers of node/traffic. The interest of such architectures is highlighted
+in {{?I-D.vonhugo-5gangip-ip-issues}} (referred to as ID-oriented Networking)
+for it removes the limitations introduced by locators and simplifies the
+management of mobility. The draft however question the possibility to realize
+such an architecture where node status and mobility would not affect routing
+table stability.
+
+The work done around Information-Centric Networking (ICN) falls into such class
+of approaches that we refer to as purely ID-based, also known as name-based
+{{?I-D.irtf-icnrg-terminology}}, although as we will see, mobility management
+often departs from this principle.
+
+
+# Information-Centric Networking (ICN)
+
+ICN identifies a new networking paradigm centering network communication around
+named data, rather that host location. Network operations are driven by
+location-independent content names, rather than location identifiers (I
+addresses) to gracefully enable user-to-content communication.
+
+Although there exist a few proposals, they share the same set of core
+principles, resulting in several advantages including a simplified mobility
+management {{!RFC7476}}. For clarify, this section will more particularly focus
+on CCN {{?I-D.irtf-icnrg-ccnxsemantics}} which is with NDN among the prominent
+architectures.
+<!--
+An overview of ICN principles and advantages
+for a simplified mobility management resulting from name-based forwarding can be
+found in {{!RFC7476}}.
+-->
+
+## Consumers and producers
+
+In ICN, endpoints can act as consumers and/or producers. Consumers when they
+emit requests for named data packets (so called Interests), producers when they
+send data packets in response to consumers request. Those two roles correspond
+to two different socket types. We talk about a pull-based - or receiver-driven
+- model, in contrast with the sender-driven operational model for IP networks
+today.
+
+Clearly a node can be a consumer and a producer at the same time (e.g. in a
+voice conversation). two sockets will be opened althrough they will be managed
+independently by the network. In particular, they will have different properties
+and requirements in terms of mobility.
+
+## Design principles
+
+Named-Data
+: Information is addressed by location-independent identifiers and network
+operations (forwarding, caching, transport, security) are bound to named-data,
+not location.
+<!-- As forwarding data is fully contained in routers' FIBs, this
+avoids the need to rely on a third-party anchor node or mapping service
+(anchorless forwarding).-->
+
+Dynamic Forwarding
+: the name-based data plane is stateful. Names are advertised by the routing
+layer, and user requests (interests) are routed by name and a trace of pending
+requests is left to guarantee reverse path routing of corresponding data, to
+enable aggregation (synchronous multicast) and to drive forwarding strategies
+(based on popularity and on network status).
+
+<!-- the opportunity to define fine-grained per-application forwarding and
+security policies. -->
+
+Enhanced Transport
+: ICN is built around a __pull-based connection-less__ transport exploiting this
+stateful data plane. In contrast to sender-based control, this permits fast
+reactivity to mobility, not requiring any source address, and fine-grained
+forwarding decisions allowing simple realization of multihoming, multipath,
+multi-source and multicast distribution. In addition, there is no connection to
+setup, teardown or migrate, nor any state to maintain, which proves particularly
+interesting on producer side.
+
+In-path Caching/Processing
+: Packet forwarding is enriched with in-path buffering and processing
+capabilities. In path buffering is exploited for re-use (asynchronous multicast
+of data via cached replica) and repair (in-network rate/congestion control).
+
+Content-based security
+: This solves the context transfer problem, and the need
+to trust the end point. This moreover allows in-network caching, and the ability
+for the network to part an active part of the communication, for instance for
+transparently supporting multiple sources of content, or helping the transport
+protocol during mobility.
+
+## Consumer and producer mobility
+
+__Consumer mobility__
+
+Due to the pull-based and connection-less properties of hICN
+communications, consumer mobility comes natively with ICN. It is indeed
+sufficient that the consumer reissues pending interests from the new
+point-of-attachment to continue the communication. Consumer mobiliy is
+anchorless by design. As will be discussed below, it is however necessary to
+have appropriate transport layer on top able to cope with the disruptions and
+path variations due to the mobility, at an eventual fine granularity.
+
+__Producer mobility__
+
+<!--
+Producers are answering to interests and need to be continuously reachable
+though information in network FIBs.
+-->
+
+Producer mobility is not natively supported by the architecture, rather handled
+in different ways according to the selected producer mobility management scheme,
+some of which diverge from the concept of pure ID-based architecture through
+their use of locators.
+
+In fact, many schemes proposed for ICN are adaptations to the vast amount of
+work made in IP over the last two decades {{!RFC6301}}. Surveys for the ICN
+family, resp. for CCN/NDN-specific solutions, are available in {{SURVEYICN}},
+resp. {{SURVEY1}} and {{SURVEY2}}. There has been however a recent trend towards
+anchorless mobility management, facilitated by ICN design principles, that has
+led to new proposals and an extension of previous classifications in
+{{?I-D.irtf-icnrg-mapme}} and {{MAPME}} to the four following categories:
+
+- _Resolution based_ solutions rely on dedicated rendez-vous nodes (similar to
+DNS) which map content names into routable location identifiers. To maintain
+this mapping updated, the producer signals every movement to the mapping system.
+Once the resolution is performed, packets can be correctly routed directly to
+the producer.
+- _Anchor-based_ proposals are inspired by Mobile IP, and maintain a mapping at
+network-layer by using a stable home address advertised by a rendez-vous node,
+or anchor. This acts as a relay, forwarding through tunneling both interests
+to the producer, and data packets coming back.
+- _Tracing-based_ solutions allow the mobile node to create a hop-by-hop
+forwarding reverse path from its RV back to itself by propagating and keeping
+alive traces stored by all involved routers. Forwarding to the new location is
+enabled without tunneling.
+- _Anchorless_ approaches allow the mobile nodes to advertise their mobility to
+the network without requiring any specific node to act as a rendez-vous point.
+
+__Anchorless producer mobility with MAP-Me__
+
+The selected mobility management scheme for the present solution is MAP-Me, an
+anchorless producer mobility management solution originally proposed for ICN
+{{?I-D.irtf-icnrg-mapme}} and {{MAPME}}.
+
+MAP-Me belongs to the class of anchorless approaches that relies on
+scope-limited forwarding updates triggered by producer mobility events to keep
+locally up-to-date FIB information for a low-latency guaranteed reroute of
+consumer Interests towards changing location of the producer.
+
+The difference w.r.t. to other classes of approaches is that it does not
+require an anchor neither in forwarding plane (traffic does not need to pass
+through a specific network node), nor in the control plane (no rendez-vous
+point, no mapping system). It naturally extends the pure ID-based paradigm to
+efficiently support mobility through a lightweight FIB update process. Being
+forwarding-based, it can act at a very fine timescale without raising the
+concern of routing scalability.
+
+The appeal of purely ID-based architectures is that they move Loc/ID
+split one step further by embedding ID-awareness in the network and transport
+layer by default and as such completely decoupling data delivery from
+underlying network connectivity. Forwarding is performed directly based on
+identifiers stored in routers' FIBs and no mapping of ID into locators is
+required. In this way, purely ID-based architectures remove the need to
+maintain a global mapping system at scale, and its intrinsic management
+complexity.
+
+
+## Deployment considerations
+
+Despite years of research and well-recognized advantages, in particular for
+mobility {{!RFC7476}}, service providers are still reluctant to consider ICN as
+a viable alternative for deployment.
+
+Approaches including overlays and slicing, including for 4G and 5G
+architectures, have been extensively reviewed in {{ravindran20175g}},
+{{?I-D.ravi-icnrg-5gc-icn}} and {{?I-D.irtf-icnrg-icn-lte-4g}}.
+{{?I-D.irtf-icnrg-deployment-guidelines}} additionally provides some deployment
+guidelines, along with an overview of the different approaches.
+
+Those studies reveal the intrinsic complexity in deploying clean-slate ICN
+architectures, in particular within operational networks and standardization
+framworks such as the 3GPP's 5G specification for mobile access networks.
+Solutions involve a complex redesign of the high-level architecture, or adopt
+choices drastically reducing the effectiveness of the approach.
+
+This has motivated the design of Hybrid ICN (hICN), an incremental deployment
+solution for ICN into existing IP networks that does not tradeoff any ICN
+principles and benefits like previous partial integration approaches.
+
+## Hybrid-ICN overview
+
+Hybrid ICN (hICN) is an ICN architecture that defines integration of ICN
+semantics within IPv6, instead of over/under/aside. The only difference w.r.t.
+ICN as defined in {{?I-D.irtf-icnrg-ccnxsemantics}} is that it encodes names
+inside IP addresses, and thus can use RFC-compliant TCP/IP packets to transport
+ICN semantics.
+
+The goal of hICN is to ease ICN insertion in existing IP infrastructure by:
+
+1. selective insertion of hICN capabilities in a few network nodes at the edge
+(no need for pervasive fully hICN network enablement);
+2. guaranteed transparent interconnection with hICN-unaware IP nodes, without
+using overlays;
+3. minor modification to existing IP routers/endpoints (e.g. reuse of IP FIBs
+and of existing buffers, no modifications to L7 applications and user space hICN
+transport layer introduction in endpoints);
+4. re-use of existing IP control plane (e.g. for routing of IP prefixes carrying
+ID-semantics) along with performing mobility management and caching operations
+in forwarding plane;
+5. fallback capability to tradition IP network/transport layer.
+
+hICN architecture is described in detail in {{?I-D.muscariello-intarea-hicn}}.
+Together with MAP-Me, it forms the basis for the mobility management
+architecture we describe in the rest of this document.
+
+
+
+# Hybrid-ICN Anchorless Mobility Management (hICN-AMM)
+
+<!--
+A direct consequence of the pull-based architecture is that only producer
+mobility has to be handled by the network.
+-->
+
+Producer mobility is not natively supported by hICN, and additional procedures
+have to be performed to maintain reachability as it moves in the network.
+
+In an hICN network, regular routing protocols such as BGP, ISIS or OSPF can be
+used for propagating all prefix announcements and populate routers' FIBs.
+However, these protocols are not appropriate and should not be used to manage
+content prefix mobility, for scalability and consistency reasons.
+
+The default mobility management for hICN is designed following the same
+principles and protocols as MAP-Me, an anchorless producer mobility management
+protocol initially proposed for ICN {{?I-D.irtf-icnrg-mapme}} {{MAPME}}. It
+builds on an initial forwarding state bootstrapped by the routing protocol, and
+performs a lightweight path repair process as the producer moves. For
+simplicity, we refer to it as simply MAP-Me in the rest of the document.
+
+In the rest of this section, we describe the specific realization of the
+protocol in an hICN context. Additional background and details are available in
+{{?I-D.irtf-icnrg-mapme}} and {{MAPME}}.
+
+## Signalization messages; acknowledgements and retransmission
+
+Signalization messages follow ICN design principles and uses data plane packets
+for signalization. Signalization messages and acknowledgement are respectively
+Interest and Data packet according to hICN specification
+{{?I-D.muscariello-intarea-hicn}}. They have respectively a locator (content
+identifier) as source, and content identifier (locator) as destination, and are
+thus punted by the regular hICN forwarding pipeline. They are forwarded based on
+FIB information of the intermediate routers, and as such Signalization Interests
+processing do not involve any locator address.
+
+Upon processing of those advertisements, the network will send an
+acknowledgement back to the producer using the content prefix as the source and
+the locator of the producer as the destination, plus the sequence number
+allowing the producer to match which update has been acknowledged.
+
+Pending signalization interests that are not acknowledged are retransmitted
+after a given timeout.
+
+## Dynamic face creation and producer-triggered advertisements
+
+The producer is responsible for mobility updates and should be hICN-enabled. It
+stores a sequence number incremented at each mobility event.
+
+Faces in the producer are assumed synchronized with layer 2 adjacencies, upon
+joining a new point-of-attachment, a new face should be created. Face creation
+will trigger the increase of the sequence number, and per-prefix advertisement
+packets to be sent to the joined network.
+
+Those advertisements should contain:
+
+- the content prefix as the destination address, plus a field indicating the
+associated prefix length;
+- the locator of the producer as the source address, that will serve for
+receiving acknowledgements;
+- a sequence number sequentially increased by the producer after each movement;
+- a security token (see {{sec-security}}.
+
+Upon producer departures from a PoA, the corresponding face is destroyed. If
+this leads to the removal of the last next hop, then faces in TFIB with Null
+timer (entries generated by notifications) are restored in FIB to preserve the
+original forwarding tree and thus global connectivity.
+
+## Update protocol
+
+Based on the information transmitted in the packet, and its local the network's
+local policy, the network might decide to update its forwarding state to reflect
+this change.
+
+The update process consists in updating a few routers on the path between the
+new and a former point-of-attachement. More precisely, this is done in a purely
+anchorless fashion by sending a signalling message from the new location towards
+the content prefix itself. This packet will be forwarded based on the now-stale
+FIB entries, and will update forwarding entries to point to the ingress
+interfaces of each traversed router.
+
+### Illustration
+
+{fig-mapme-update}} illustrates the situation of a P moving between access
+routers AR1 and AR2 while serving user requests:
+
+1. A first interest towards the producer originates from remote. The producer
+   answers with a Data packet.
+2. Following this, the producer detaches from AR1 and moves to AR2.
+3. As soon as it is attached to AR2, the producer sends an Interest Update
+   towards its own prefix, which is forwarded from AR2 following the FIB towards
+   AR1 (one of its former positions in the general case).
+4. At each hop, the message fixes the FIB to point towards the ingress face,
+   until the message cannot be further forwarded in AR1.
+5. A subsequent message from remote will follow the updated FIB and correctly
+   reach the producer's new location in AR2.
+
+~~~~
+    P  (radio link)  AR1               AR2               GW            Internet
+    |                 |                 |                 |                |
+1   |                 |                 |                 |<~~~~~~~~~~~~~~~|
+    |                 |<~~~~~~~~~~~~~~~~|~~~~~~~~~~~~~~~~~|    Interest    |
+    |<~~~~~~~~~~~~~~~~|                 |                 |                |
+    |---------------->|                 |                 |                |
+2  []     Data        |-----------------|---------------->|                |
+  / |                 |                 |                 |--------------->|
+  | | (attach to AR2) |                 |                 |                |
+  -X].................|.................|                 |                |
+3   |=================|================>o FIB update      |                |
+    | Update          |                 |================>o FIB update     |
+4   |                 o<================|=================|                |
+    |      FIB update |                 |                 |                |
+5   |                 |                 |                 |<~~~~~~~~~~~~~~~|
+    |                 |                 |<~~~~~~~~~~~~~~~~|                |
+    |<~~~~~~~~~~~~~~~~|~~~~~~~~~~~~~~~~~|                 |                |
+    |-----------------|---------------->|                 |                |
+    |                 |                 |---------------->|                |
+    |                 |                 |                 |--------------->|
+    |                 |                 |                 |                |
+~~~~
+{: #fig-mapme-update title="Signalization during producer mobility (MAP-Me)"}
+
+Through this process, MAP-Me trades-off path optimality for a fast, lightweight
+and loop-free forwarding update. It has been shown in {{MAPME}} that stretch is
+bounded and typically kept low in scenarios of interest: the metric of interest
+is in fact the user flow performance resulting from the interaction between
+traffic demand and network capacity. This results from the fact that MAP-Me
+operations preserve the initial structure of the forwarding tree/DAG, by only
+flipping its edges to point to the new producer location.
+
+MAP-Me does not perform a routing update. The protocol is complementary to the
+routing protocol in that it can run in between routing updates to handle
+producer mobility, at a faster timescale, and with a lower overhead. Routing
+updates can be performed at a lower-pace, to reoptimize routes once a node has
+relocated for instance.
+
+### Message content
+
+The update messages should contain :
+
+- the content prefix as the destination address, plus a field indicating the
+associated prefix length;
+- the locator of the producer as the source address, that will serve for
+receiving acknowledgements;
+- a sequence number sequentially increased by the producer after each movement;
+- an optional security token.
+
+### Processing at network routers
+
+At the reception of advertisement/update packets, each router performs a
+name-based Longest Prefix Match lookup in FIB to compare sequence number from
+the received packet and from FIB}. According to that comparison:
+
+- if the packet carries a higher sequence number, the existing
+  next hops associated to the lower sequence number in FIB are used to
+  forward it further and temporarily stored to avoid loss of such information before completion of the
+  acknowledgement process.
+
+- If the packet carries the same sequence number as in the FIB, its originating
+  face is added to the existing ones in FIB without additional packet processing
+  or propagation. This may occur in presence of multiple forwarding paths.
+
+- If the packet carries a lower sequence number than the one in the FIB, FIB
+  entry is not updated as it already stores 'fresher information'.  To advertise
+  the latest update through the path followed by the packet, this one is re-sent
+  through the originating face after having updated its sequence number with the
+  value stored in FIB.
+
+## Notifications and scoped discovery
+
+The update protocol is responsible for reestablishing global connectivity with
+minimal changes to the FIBs. In order to further improve the reactivity of the
+scheme and better support QoS constraints of latency-sensitive traffic, we
+propose an additional mechanism named __Notifications__. It assumes hICN-enabled
+routers at the edge, and the existence of links between access routers, which
+are typically used for handover, and proposes to exploit them during mobility
+events, or to delay updates when possible.
+
+### Notification processing
+
+Upon receiving a valid advertisement, the point-of-attachment will remember the
+presence of the producer, update its corresponding FIB entry but send no update.
+Previous next hops should be saved and restored upon face deletion so as to
+preserve the forwarding tree/DAG structure.
+
+The rationale is that during mobility events, the producer will move access
+connected and neighbouring base stations. It will be then suficient to make a
+scoped discovery around the last position known to forwarding to find the
+producer within a few hops.
+
+### Illustration
+
+{{fig-mapme-discovery}} illustrate such as situation where an Interest is sent
+to the producer before it had the time to complete the update.
+
+~~~~
+    P  (radio link)  AR1               AR2               GW            Internet
+    |                 |                 |                 |                |
+1   |                 |                 |                 |<~~~~~~~~~~~~~~~|
+    |                 |<~~~~~~~~~~~~~~~~|~~~~~~~~~~~~~~~~~|    Interest    |
+    |<~~~~~~~~~~~~~~~~|                 |                 |                |
+    |---------------->|                 |                 |                |
+2  [].....Data.......-)-----------------|---------------->|                |
+  / |                 |                 |                 |--------------->|
+  | | (attach to AR2) |                 |                 |                |
+  -Y].................|.................+                 |                |
+3   |                 |                 |                 |<~~~~~~~~~~~~~~~|
+4   |              X--|<~~~~~~~~~~~~~~~~|~~~~~~~~~~~~~~~~~|                |
+    |                 |                 |                 |                |
+5   |=================|================>o FIB update      |                |
+    | Notification    |                 |                 |                |
+    |                 |~~~~~~~~~~~~~~~~>| (scoped discovery)               |
+6   |<~~~~~~~~~~~~~~~~|~~~~~~~~~~~~~~~~~|                 |                |
+7   |-----------------|---------------->|                 |                |
+    |                 |<----------------|                 |                |
+    |                 |-----------------|---------------->|                |
+    |                 |                 |                 |--------------->|
+    |                 |                 |                 |                |
+~~~~
+{: #fig-mapme-discovery title="Scoped discovery during producer mobility" }
+
+1. A first interest towards the producer originates from remote. The producer
+   answers with a Data packet.
+2. Following this, the producer detaches from AR1 and moves to AR2.
+3. A subsequent message from remote arrives before the update could take place,
+   and is thus forwarded to AR1.
+4. AR1 has no valid face anymore towards the producer, and enters discovery mode
+   by broadcasting the interest to neighbours.
+5. In the meantime, we assume the notification reaches AR2.
+6. Because the producer is attached to AR2, the producer can be directly
+   reachable. Otherwise, AR2 would iterate the discovery to neighbours only if
+   it had more recent information about the producer location than its
+   predecessor (based on sequencing of regular Interests and Interest Updates).
+7. The Data packet follows the reverse path to the consumer as usual.
+
+<!--
+## Algorithm
+
+The operations in the forwarding pipeline for IU/IN processing are reported in
+Alg. {{alg-update}}.
+
+~~~~~~~~~~
+   | Algorithm 1 : ForwardSpecialInterest(SpecialInterest SI, Ingress face F)
+   |
+   |  CheckValidity()
+   |  // Retrieve the FIB entry associated to the prefix
+   |  e, T <- FIB.LongestPrefixMatch(SI.name)
+   |  if SI.seq >= e.seq then
+   |  .   // Acknowledge reception
+   |  .   s <- e.seq
+   |  .   e.seq <- SI.seq
+   |  .   SendReliably(F, SI.type + Ack, e)
+   |  .   //Process special interest
+   |  .   if F in e.TFIB then
+   |  .   .   // Remove outdated TFIB entry (eventually cancelling timer)
+   |  .   .   e.TFIB = e.TFIB \ F
+   |  .   if SI.seq > s then
+   |  .   .   if SI.type == IU then
+   |  .   .   .   // Forward the IU following the FIB entry
+   |  .   .   .   SendReliably(e.NextHops, SI.type, e
+   |  .   .   else
+   |  .   .   .   // Create breadcrumb and preserve forwarding structure
+   |  .   .   .   e.TFIB = e.TFIB U {( f -> NULL) : for all f in e.NextHops}
+   |  .   .   e.NextHops = {}
+   |  .   e.NextHops = e.NextHops U { F }
+   |  else
+   |  .   // Send updated IU backwards
+   |  .   SI.seq = e.seq
+   |  .   SendReliably(F, SI.type, e)
+~~~~~~~~~~
+{: #alg-update}
+-->
+
+
+<!--
+More details about the realization of the protocol can be found in
+{{?I-D.irtf-icnrg-mapme}}, including optimizations allowing to improve the
+support of latency-sensitive applications, and further reducing overhead.
+
++ sequence numbers
+-->
+
+# Benefits
+
+We now review the potential benefits of the general architecture we have
+presented using features from the hICN data plane for supporting consumer and
+producer mobility.
+
+## Overview
+
+__Native mobility__ : This mobility management process follows and exploits ICN
+and hICN design principles. It makes producer mobility native in the
+architecture by preserving all benefits of hICN even when consumers and/or
+producers are moving.
+
+__Anchorless mobility__ : Such approach belongs to the category of pure ID-based
+mobility management schemes whose objective is (i) to overcome the limitations
+of traditional locator-based solutions like Mobile IP (conf)using locators as
+identifiers and requiring tunnels, and (ii) to remove the need for a global
+mapping system as the one required by locator-identifier separation solutions.
+The result is a fully anchorless solution both in the data plane and in the
+control plane.
+
+__Local and decentralized mobility management__ : Mobility updates are handled
+locally and the routers that are affected are those on path between successive
+positions of the producer. In particular, remote endpoints are not affected by
+the event. Mobility is managed in a fully distributed manner and no third party
+is required. This does not prevent any centralized control (as discussed in
+{{?I-D.auge-dmm-hicn-mobility-deployment-options}}), but makes the network
+robust to disconnectivity events.
+
+The next section will discuss more in depth the following advantages
+
+## Simplicity, scalability, efficiency
+
+As emerges from the points raised in the previous section, consumer mobility is
+transparently supported by an hICN network in virtue of the pull-based model and
+stateful forwarding state in packet-caches. The only requirement is to have a
+compatible transport layer able to cope with multihoming, multipath and
+multisource characteristics of ICN data transfers.
+
+After moving, a consumer can just reissue pending interests once attached to the
+new access router at layer 2, without requiring any more information from L3 and
+above. This ensures a fast and simple handover, which can be further enhanced
+through additional mechanisms such as in-network caching. Consumer mobility is
+fully anchorless with hICN, and does not incur any signalization nor tunneling
+overhead.
+
+This is particularly interesting considering that most mobile users are
+consumers only (eg. linear video distribution, or large scale video conferencing
+where we typically have few presenters and most users are simply consumers).
+
+Another aspect of using the unifying hICN architecture in replacement of the
+traditional tunnel-based mobile core is that it remove the need to maintain
+state for consumers and producers which are not mobile (eg. iOT sensors), or not
+currently moving.
+
+
+## Reduced latency through caching
+
+While this is not strictly linked to mobility, we first illustrate the benefits
+of caching content close to the edge to reduce user latencies. This is
+particularly important for wireless networks such as WiFi or LTE which have
+non-negligible latencies especially during connection setup, or after an idle
+period. The characteristics of those radio networks are thus of interest for the
+performance of the mobility architecture as a whole.
+
+The example in {{fig-twoaccess}} considers a mobile node that can move access
+two accesses linked to Access Routers (AR) AR1 and AR2, both connected to the
+Internet though a common gateway (GW). This same setup will be later used to
+illustate the flow of packets during mobility events, eventually specializing AR
+into AP or eNB when it makes more sense.
+
+~~~~
+             +-----+                        .-~~~-.
+         _,--+ AR1 +--,             .- ~ ~-(       )_ _
++-----+ /    +-----+   \ +----+    |                     ~ -.         +-----+
+|  C  +=                =+ GW +----+        Internet         \---//---+  P  |
++-----+ \_   +-----+   / +----+     \                       .'        +-----+
+          '--+ AR2 +--'              ~- . _____________ . -~
+             +-----+
+~~~~
+{: #fig-twoaccess title="Simple topology with a multi-homed consumer"}
+
+We represent in {{fig-latency}} a simple data flow between the different entities involved in the
+communication between the mobile node M, and a remote producer available over
+the Internet.
+
+
+~~~~
+    C                AR1               AR2               GW            Internet
+    |                 |                 |                 |                |
+1   |~~~~~~~~~~~~~~~~>|                 |                 |                |
+    |   Interest X    |~~~~~~~~~~~~~~~~~|~~~~~~~~~~~~~~~~>|                |
+    |                 |                 |                 |~~~~~~~~~~~~~~~>|
+    |                 |                 |                 |                |...
+    |                 |                 |                 |<---------------|
+    |      Data X     |<----------------|-----------------|                |
+    |<----------------|                 |                 |                |
+    |                 |                 |                 |                |
+2   |~~~~~~~~~~~~~~~~>|                 |                 |                |
+3   |   Interest Y    |~~~~~~~~~~~~~~~~~|~~~~~~~~~~~~~~~~>X Cache hit      |
+    |                 |<----------------|-----------------X                |
+    |<----------------|                 |                 |                |
+    |     Data Y      |                 |                 |                |
+
+
+LEGEND:
+~~~~>: Interest     <---- Data     ====> Signalization     X failure    o event
+....-: L2 detach    .....+ L2 attach
+
+~~~~
+{: #fig-latency title="Reduced latency through caching" }
+
+Numbers on the left refer to the following comments relative to the data flow:
+
+1. The consumer issues a first interest towards content X, which is transported
+   up to the producer. A Data packet comes back following the reverse path and
+   populating intermediate caches. Latency of the exchange can be seen by the
+   distance between lines on the vertical axis.
+
+2. The consumer now requests content B, which has previously been requested by
+   another consumer located on the same gateway. Interest B thus hits the cache,
+   refreshes the entry, and allows a lower round-trip latency to content both for
+   consumer C and any subsequent request of the same content.
+
+
+## Improved reliability through caching
+
+Mobile networks might consist in unreliable access technologies, such as WiFi,
+responsible for packet losses. {{fig-loss-cache}} considers a similar scenario
+with a lossy channel (eg. WiFi) between the mobile and the first access router.
+
+~~~~
+    C  (radio link)  AR1               AR2               GW            Internet
+    |                 |                 |                 |                |
+1   |~~~~~~~~X        |                 |                 |                |
+2   |~~~~~~~~~~~~~~~~>|                 |                 |                |
+    |   Interest      |~~~~~~~~~~~~~~~~~|~~~~~~~~~~~~~~~~>|                |
+    |                 |                 |                 |~~~~~~~~~~~~~~~>|
+    |                 |                 |                 |                | ...
+    |                 |                 |                 |<---------------|
+    |      Data       |<----------------|-----------------|                |
+3   |        X--------|                 |                 |                |
+    |                 |                 |                 |                |
+4   |~~~~~~~~~~~~~~~~>X Cache hit       |                 |                |
+    |<----------------X                 |                 |                |
+    |                 |                 |                 |                |
+~~~~
+{: #fig-loss-cache title="IU propagation example"}
+
+1. The first issued interest is lost due to bad radio conditions.
+
+2. Upon detection (either after a timeout, the consumer can just reissue the lost
+   nterest.
+
+3. This time the remote producer successfully replies but the Data packet is
+   lost on the radio link.
+
+4. Upon a similar detection, the consumer can reissue the lost Interest that
+   will hit a locally stored copu at the router where the loss occured (or again
+   use a detection mechanism to retransmit the Data packet).
+
+## Local mobility and recovery from common cache
+
+The same mechanism can be used to recover from mobility losses after the
+consumer reconnects to the new network as the content will already be available
+in the cache at the junction router between the two accesses. This is
+particularly interesting in case of micro-mobility between access routers that
+are topologically close in the network.
+
+This is also the opportunity to manage those losses on behalf of the transport
+protocol, so that only losses due to congestion are exposed to it, and don't
+perturb the feedback loop by unnecessarily reducing the transfer rate.
+
+~~~~
+    C  (radio link)  AR1               AR2               GW            Internet
+    |                 |                 |                 |                |
+1   |~~~~~~~~~~~~~~~~>|                 |                 |                |
+    |   Interest      |~~~~~~~~~~~~~~~~~|~~~~~~~~~~~~~~~~>|                |
+    |                 |                 |                 |~~~~~~~~~~~~~~~>|
+    |(detach from AR1)|                 |                 |                |
+2 ..|.................-                 |                 |<---------------|
+    |                 |<----------------|-----------------|                |
+3   |         Data X--|                 |                 |                |
+    |                 |                 |                 |                |
+    | (attach to AR2  |                 |                 |                |
+4 ..|.................|.................+                 |                |
+5   |~~~~~~~~~~~~~~~~~|~~~~~~~~~~~~~~~~>|                 |                |
+6   |                 |                 |~~~~~~~~~~~~~~~~>X Cache hit      |
+    |                 |                 |<----------------X                |
+    |<----------------|-----------------|                 |                |
+    |                 |                 |                 |                |
+~~~~
+{: #fig-mobility-cache title="IU propagation example"}
+
+1. The consumer issues an interest before moving to a new location
+2. It detaches from the first Access Router AR1
+3. This causes the returning data packet to be lost as there is no more a valid
+   face towards the consumer.
+4. The consumer has finished attachment to the new access router AR2.
+5. It can retransmit pending interests immediately.
+6. The interests will hit the cache at the first junction point between AR1 and
+   AR2 which have previously seen the data packet coming back.
+
+## Additional reliability through consumer multihoming
+
+Because mobility is implemented at layer 3 and is thus agnostic to the physical
+layer, this allows a mobile consumer to seamlessly switch to a different access
+layer, eg. WiFi to LTE, following the unreachability of the preferred radio
+access.
+
+{{fig-mobility-seamless}} illustrates a fallback to LTE which can be performed
+transparently for the application.
+
+~~~~
+   C           WiFi           GW          LTE enB         PGW         Internet
+   |             |             |             |             |             |
+1  |~~~~~~~~~~~~>|             |             |             |             |
+   |             |~~~~~~~~~~~~>|             |             |             |
+   |             |             |~~~~~~~~~~~~~|~~~~~~~~~~~~~|~~~~~~~~~~~~>|
+   |             |             |             |             |             |
+   |             |             |<------------|-------------|-------------|
+   |             |<------------|             |             |             |
+   |<------------|             |             |             |             |
+2  |             X             |             |             |             |
+3  |~~~~~~~~~~~~~X~~~~~~~~~~~~~|~~~~~~~~~~~~>|             |             |
+   |             X             |             |~~~~~~~~~~~~>|             |
+   |             X             |             |             |~~~~~~~~~~~~>|
+   |             |             |             |             |             |
+   |             |             |             |             |<------------|
+   |             |             |             |<------------|             |
+   |<------------|-------------|-------------|             |             |
+4  |~~~~~~~~~~~~>|...          |             |             |             |
+   |             |             |             |             |             |
+~~~~~
+{: #fig-mobility-seamless title="Seamless mobility between a WiFi and a LTE access point}
+
+1. First interest is sent on the WiFi link.
+2. WiFi unavailability due to failure for instance.
+3. The application seamlessly switches to the LTE link.
+4. Upon recovery, the traffic can be brought back on the WiFi interface.
+
+hICN handles consumer mobility from one access to the other (e.g.  WiFi to LTE
+or viceversa) without any a-priori knowledge of the multiple networks to use as
+it is the case of MPTCP or QUIC approaches. Moving rate and congestion control
+at the receiver end results to be a significant advantage w.r.t. all existing
+alternatives in controlling dynamically multiple and new discovered network
+accesses in presence of mobility.
+
+This use case highlights the importance of having a compatible transport, as the
+WiFi and LTE paths will have much different characteristics in terms of delay,
+jitter and capacity.
+
+Evaluations of the scheme have shown this scheme to preserve the performance of
+flows like mobile video distribution up to very high switching rates in the
+order of a second, not even considering optimization occurring from network
+support.
+
+Mobility is handled transparently at the network layer with very
+fast handover times, due to the connection-less property of hICN. This makes it
+possible to offer reliable WiFi connectivity, besides its lossy nature as
+observed in previous use case and besides the frequency of mobility from one
+network access to the other.
+
+Example of live video streaming edge to edge in MWC'16 demo ?
+
+## Bandwidth aggregation with consumer multihoming
+
+Bandwidth aggregation can be realized dynamically through a congestion-aware
+load-balancing forwarding strategy at the client, with no a priori knowledge of
+paths. This is done similarly in the network by hICN forwarders, allowing a
+combination of multi-homing, multipath and multi-source data transfers. As all
+the paths are used at thesame time, hICN offers the full network capacity to the
+users and tends tosmoothen fluctuations due to the radio channels.
+
+Over an heterogeneous network access, hICN also offers a simple and
+cost-effective realization of heterogeneous channel bonding allowing an user to
+seamlessly roam across different radios or fixed lines (for increased
+reliability or reduced costs), or aggregate their bandwidth for high-throughput
+applications such as video streaming.
+
+We illustrate a simplified data flows with one mobile consumer C alternating
+interests between a WiFi and LTE access points. The load balancing strategy
+would in that case optimize the split ratio between the two access to real an
+optimizal split. Note that in that case the relative distances on the vertical
+axis have not been respected here for reability.
+
+~~~~
+   C           WiFi           GW          LTE enB         PGW         Internet
+   |             |             |             |             |             |
+   |~~~~~~~~~~~~~|~~~~~~~~~~~~~|~~~~~~~~~~~~>|             |             |
+   |~~~~~~~~~~~~>|             |             |~~~~~~~~~~~~>|~~~~~~~~~~~~>|
+   |             |~~~~~~~~~~~~>|             |             |             |
+   |             |             |~~~~~~~~~~~~~|~~~~~~~~~~~~~|~~~~~~~~~~~~>|
+   |             |             |             |             |             |
+   |             |             |             |             |<------------|
+   |             |             |             |<------------|             |
+   |<------------|-------------|-------------|             |             |
+   |             |             |<------------|-------------|-------------|
+   |             |<------------|             |             |             |
+   |<------------|             |             |             |             |
+   |             |             |             |             |             |
+   |             |             |             |             |             |
+~~~~
+
+Fine grained control from the application allows fully exploiting available
+bandwidth, resulting in an aggregated througput equal to the sum of access
+throughputs, which is hard to achieve with existing solutions.
+
+Experiments with DASH video streaming comparing per-packet and per-segment load
+balancing strategies as would be the case with MPTCP, where load-balancing is
+performed at the application granularity), have shown that only in the first
+case the client is able to exploit the aggregated bandwidth available on each
+path. Per-segment load balancing is not better than downloading on a single
+path. This has been previously observed in the literature. Multiple source
+streaming would offer the same guarantees, and are typically not possible with
+solutions such as MPTCP.
+
+## Traffic and signalization offload
+
+As a natural consequence of its anchorless behavior, an hICN network can
+continue to operate in disconnected mode, for local mobility, even though no
+upstream entity is available.
+
+In order to illustrate this, we slightly extend the previous topology in
+{{fig-disconnected-topology}} with an additional access network. To show that
+local mobility induces no traffic on upstream links, we further assume a failure
+on the link between the gateway (GW) and the Internet.
+
+~~~~
+             +-----+
+         _,--+ AR1 +--,
++-----+ /    +-----+   \                         .-~~~-.
+|  P  +=                \                .- ~ ~-(       )_ _
++-----+ \_   +-----+     +----+         |                     ~ -.
+          '--+ AR2 +-----+ GW +----X----+        Internet         \
+             +-----+     +----+   FAIL   \                       .'
+                        /                 ~- . _____________ . -~
++-----+      +-----+  /
+|  C  +------+ AR3 +-'
++-----+      +-----+
+~~~~
+{: #fig-disconnected-topology title="Access network disconnected from core"}
+
+The data flow represented in {{fig-disconnected}} illustrates the communication
+between a consumer connected to AR3, and a mobile producer moving from AR1 to
+AR2.
+
+~~~~
+    C          P         AR1        AR2        AR3         GW   X     Internet
+    |          |          |          |          |          |    X         |
+    |~~~~~~~~~~|~~~~~~~~~~|~~~~~~~~~~|~~~~~~~~~>|          |    X         |
+    |          |          |          |          |~~~~~~~~~>|    X         |
+    |          |          |<~~~~~~~~~|~~~~~~~~~~|~~~~~~~~~~|    X         |
+    |          |<~~~~~~~~~|          |          |          |    X         |
+    |          |--------->|          |          |          |    X         |
+    |          |          |----------|----------|--------->|    X         |
+    |          |          |          |          |<---------|    X         |
+    |<---------|----------|----------|----------|          |    X         |
+    |          |          |          |          |          |    X         |
+    |          |..........-          |          |          |    X         |
+    |          |..........|..........+          |          |    X         |
+    |          |==========|=========>o          |          |    X   NO    |
+    |          | Update   |          |==========|=========>o    X TRAFFIC |
+    |          |          o<=========|==========|==========|    X         |
+    |          |          |          |          |          |    X         |
+    |~~~~~~~~~~|~~~~~~~~~~|~~~~~~~~~~|~~~~~~~~~>|          |    X         |
+    |          |          |          |          |~~~~~~~~~>|    X         |
+    |          |          |          |<~~~~~~~~~|~~~~~~~~~~|    X         |
+    |          |<~~~~~~~~~|~~~~~~~~~~|          |          |    X         |
+    |          |----------|--------->|          |          |    X         |
+    |          |          |          |----------|--------->|    X         |
+    |          |          |          |          |<---------|    X         |
+    |<---------|----------|----------|----------|          |    X         |
+    |          |          |          |          |          |    X         |
+~~~~
+{: #fig-disconnected title="Anchoress mobility in network disconnected from core"}
+
+We see that both the data and the signalization remain local to the zone where
+the mobility occurs, and that communications during mobility are not affected by
+the failure of the link upstream. This is a sign that the mobile core is not
+loaded with unnecessary traffic, and that communications remain local, thus
+improving user flow latencies. The offload of both data and signalization allows
+reducing the cost of the infrastructure by increasing the diversity of resources
+used at edge, mutualizing their capacity, and lower requiring network and
+compute capacity in the mobile core. A direct consequence is also a more robust
+and reliable network.
+
+
+<!--
+Classification in {{XXX}}, further refined in {{XXX}}: Routing-based (RT),
+Resolution-based (RB), Anchor-based (AB), Tracing-based (TB), Anchorless (AL)
+
+                RT      RB      AB      TB      AL
+FW      UP      N       N(1)    Y       N(2)    N
+        CP      N       Y       Y       Y(3)    N
+
+(1) those solution are generally denoted anchorless as they consider the use of
+caches (push or pull model), not including the fact that a packet might be
+delayed during resolution, or directed through a mapping service in case of
+cache miss.
+
+(2) anchorless if the path cross a trace (not clear what happends when an
+        outdates trace is found), otherwise, might go through the anchor
+
+we might want to comment all this
+eg kite send control traffic towards a locator
+mapme sends control traffic towards an identifier, not early binding of where
+the special interst will go and it is dynamically adjusted based on concurrent
+routing or mobility updates -->
+
+<!-- metrics
+overhead when producer is static, has relocated
+scalability
+-->
+
+# Discussion
+
+## Scope
+
+Both consumer and producer mobility support multiple paths, however the support
+of mobility for a multihomed produced, is to be documented in further study.
+
+Similarly, the proposed producer mobility solution is appropriate for the
+management of micro-mobility; its extension to multiple domains has to be the
+subject of further study.
+
+## Interaction with non-hICN enabled routers
+
+The realization of the architecture in a partial hICN deployment where some
+routers are not extended to support hICN mechanisms requires either to introduce
+additional functionalities or protocol support, or to reuse existing protocols
+achieving similar objectives (following hICN design).
+
+One such example is the combination of ICMP redirect messages and Neighbour
+Discovery Proxies (NDProxy), that partially realizes the objectives of the update process:
+
+- ICMP packets do not include sequence numbers however they can be transported
+as part of the payload; verification is deferred to the next hICN node which
+should send the packet backwards in case of verification failure to fix the
+incorrect path update.
+- multipath is not supported in the pure-IP part of the network (which is
+the expected behaviour)
+
+Identified concerns might be about the unexpected use of such protocols, the
+lack of available implementation for NDProxy, and security aspect related to
+redirect messages. The latter shares the fate of source routing, which has long
+been advocated against, and has recently gained popularity within the SPRING
+context. A proper security scheme is certainly the right way to address this
+problem, and we believe the set of benefits that we have listed are worth
+reconsidering such aspects.
+
+<!--
+Alternatively, it is possible to reuse other existing data plane protocols that are more directly
+applicable, such as RSVP, AODV or OLSR.
+-->
+
+<!--
+## Impact on transport protocols
+
+Years of scientific research have made it clear that designing efficient
+transport protocols suitables for diverse environments in a challenging task.
+This in particular the case for the dynamic and mobile environments we are
+considering in this draft.
+
+In future generation networks, mobility has to be understood in the broad term
+due the higher level of expectations:
+
+- the ability to switch, possibly at high frequency, between heterogeneous access
+medium, whose network characteristics such as latency or bandwidth can be
+radically different.
+- the possibility to aggregate bandwidth from the same access technologies, and
+offer aggregated bandwith.
+- more generally, the ability to establish multipoint-to-multipoint connections,
+using a combination of multipath, multi-homing, and multi-source patterns in
+order to exploit available resources best.
+
+This situation is natively supported by the underlying hICN network. However, it
+is clearly not favourable to most congestion control protocols such as TCP,
+which expect a relatively stable connection between two endpoints. We have a
+full history of work suggesting this is a tedious task given the amount of
+available feedback we have today from the network (end-to-end packet losses or
+delay, for instance).
+
+This suggests that we cannot simply design the data plane and mobility protocols
+without thinking about their requirements, and more importantly, the interface
+they will offer to the higher transport layers to allow for efficient use. This
+is especially important since the use of identifiers in application will further
+mask the multiple connections, and their change during the course of a data
+transfer.
+
+In this document, we assume the use of a compatible protocol. While they are
+still subject to much research, the ICN community has already designed a couple
+of candidates {{SURVEYCC}}.
+
+One outcome of such research is that it is important for the network to provide
+upper layers with implicit or explicit feedback about the state of the paths
+between consumers and producers, or to some extend, in-network support for
+managing losses on behalf on the transport protocol, such as caching, or the
+more advanced mechanisms proposed in {?carofiglio2016wldr}.
+-->
+
+## Security considerations {#sec-security}
+
+As indicated in previous sections, signalization messages transmitted across
+trust boundaries must be secured. The choice of the solution will intimately
+depend on the selected protocols.
+
+The use of ICMP packet might allow reusing existing security schemes such as AH
+headers {{!RFC4302}}, or SEND {{!RFC3971}} (and its proxy extensions {{!RFC6496}},
+{{!RFC5909}}).
+
+Alternatively, {{?SEC}} has reviewed standard approaches from the
+literature and proposes a fast, lightweight and distributed approach that
+can be applied to MAP-Me and fits its design principles.
+
+
+# Acknowledgements
+
+
+# Contributors
+
+
+# IANA Considerations {#iana}
+
+This memo includes no request to IANA.
+
