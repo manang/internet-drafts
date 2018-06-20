@@ -64,7 +64,10 @@ informative:
 
 --- abstract
 
-TODO
+This document presents how mobility management is handled in Hybrid-ICN {{?I-D.muscariello-intarea-hicn}}.
+The objective of the document is to present how end-points mobility is managed in two main cases:
+the end-point sends data (data producer ) or the end-point receive data (data consumer).
+These two cases are taken into account entirely to provide anchorless mobility management.
 
 --- middle	
 
@@ -80,21 +83,10 @@ network as an afterthought. Notable examples are IETF Mobile IP and its variants
 {{!RFC3344}} and {{!RFC3775}} 3GPP GTP-based architecture {{TS29.274}}, both
 based on tunnelling and encapsulation.
 
-With the growth of new usages such as mobile video, AR/VR or vehicular
+With the deployments of novel applications such as mobile video, AR/VR or vehicular
 networking, mobile networks are more challenged than ever, and the currently
-cetnralized architectures are showing their limits in terms of performance and
-scalability. The recent years have seen interesting efforts (cfr. DMM WG at IETF)
-aiming at optimizing existing protocols by means of distribution of the data plane
-at the netork edge. Also, there is an ongoing liaison between IETF and  3GPP to
-explore newly defined protocol candidates for 5G architecture.
-
-There is an agreement of what should be the key design principles of this next
-generation mobile network, such as the separation of control and data planes,
-the unification of different networks with mobility now being a first
-class citizen, the simplication and the avoidance of tunnels and central anchors.
-In addition, the choice of the design shall be influenced by the evolution
-possibilities it offers in term of traffic engineering and new usages such as
-virtualization, mobile-edge computing etc.
+centralized architectures show limitations in terms of performance and
+scalability. 
 
 One identified difficulty in proposing mobility models in IP lies in the
 semantic overloading of IP addresses which are both host identifiers, and
@@ -103,57 +95,13 @@ paradigm has shown promising results in virtue of its scalability properties wit
 to routing tables entries, and the possibilities it offers in terms of mobility.
 Several solutions have been proposed around this concept, namely ILNP, ILSR, and ILA.
 
-In  this document, we suggest to take loc/ID separation concept one step further
-by completely removing identifiers and routing packet based on network names.
-The draft proposes a mobility approach based on native ID-oriented networking
-(as called in draft-vonhugo-5gangip-ip-issues-03), by applying
-Information-Centric Networking (ICN) principles.
-
-
-ICN has been pointed out as a potential candidate for addressing mobility in a simplified and more flexible way,
-as a result of its information-aware network layer, but also of a its connectionless received-based
-transport layer which enables a dynamic name-based forwarding plane completely decoupling data delivery from underlying network connectivity (put refs).
-
-
-ICN was however until recently deemed not ready for
-currently deployments due to the lack of a deployment path in today's network.
-We believe this should now be reconsidered in the light of a new deployment
-model, namely Hybrid ICN (hICN), which proposes a full-feature ICN deployment
-within IPv6, only trading-off variable length names for names encoded as IPv6
-addresses.
-
-The rest of the draft will analyze more in-depth those mobility considerations
-in hICN, comparatively with state-of-the-art solutions, and highly how the
-solution should allow for the expected performance from future networks, paving
+The document proposes a mobility approach based on Hybrid ICN
+as described in {{?I-D.muscariello-intarea-hicn}} and analyzes more in-depth 
+mobility considerations in hICN, comparatively with state-of-the-art solutions, and  how the
+hICN may allow for the expected performance from future networks, paving
 the way for innovation  and new applications, while keeping the simplicity and
-end-to-end design of the current internet. hICN has the interesting ability to
-offer seamless and anchorless mobility by design, to include a compatible
-transport naturally supporting multipath, multi-source and mobility across
-heterogenous network to name a few.
+end-to-end design of the current Internet. 
 
-We conclude by a discussion of the integration of hICN in current network
-architectures, and its possible interplay with complementary data plane
-solutions such as SRv6, further leveraging the IPv6 network deployments already
-existing in ISP's networks.
-
-
-# Terminology
-<!-- On the use of identifiers and locators in communication paradigms, and
-mobility management, characteristics of the resulting architectures: anchorless -->
-
-## Locators and identifiers
-
-In this document, we distinguish different possible usages of an IP address, either as
-a *locator*, to refer to the identifier of an interface in the network,
-or as a (location-independent) *identifier*, i.e. a name, to denote a stable
-identifier for a host of a data source, not affected by node mobility and relocation.
-
-{{!RFC1498}} and {{!RFC2101}} discusses the usage of locators and identifiers in
-IP architectures to conclude about the ambiguous role of IP addresses in
-operational usage today, that tends to be used mostly as locators. For
-simplicity, we will refer to the traditional architecture as locator-based, as opposed 
-to more recent proposals such as "Loc/ID split", or more recent pure ID-based or 
-name-based architectures.
 
 ## Anchors and anchorless mobility
 
@@ -176,15 +124,12 @@ user-plane anchors.
 
 
 User-plane anchor
-: An user-plane anchor is a node through which traffic is forced to pass, either
-because there is an explicit mention of the locator in packet headers, or
-simply for this node has been advertising other nodes prefixes to act as an
-attraction point. An example of such anchor is the indirection point in Mobile
-IP.
+: A user-plane anchor is a node through which traffic is forced to pass. 
+An example of such anchor is the indirection point in Mobile IP.
 
 Control-plane anchor
-: A control-plane anchor refers to a node whose is not responsible for carrying
-traffic, but who is needed for the operation of the forwarding and/or the
+: A control-plane anchor refers to a node that is not responsible for carrying
+traffic, but is needed for the operation of the forwarding and/or the
 mobility architecture. An example of such anchor is the resolution or mapping
 service of LISP. We remark that while not being on path, such anchors might
 affect the performance of the user-plane due to resolution delays or indirection
@@ -194,33 +139,32 @@ Anchorless
 : This term qualifies approaches that do not involve any user-plane not
 control-plane anchor.
 
-
 # Towards locator-independent network architectures
 
-We distinguish network architectures based on their use of identifiers and
-locators for forwarding.
+We distinguish network architectures based on their use of location independent 
+identifiers (or names) and locators for forwarding.
 
 __Locator-based architectures__
 
 As mentioned earlier, IP architectures are typically operated based on locators
-correponding to the IP addresses of the host interfaces in their respective
+corresponding to the IP addresses of the host interfaces in their respective
 network attachment, used also as session identifiers. This results in a complex
-mobility architecture built on top, involvin traffic anchors and tunnels to
+mobility architecture built on top, involving traffic anchors and tunnels to
 preserve the identifier exposed to the transport layer: IP/IP or GRE tunnels in
 Mobile IP, and GTP tunnels in 3GPP architectures.
 
 The limitations of locator-based schemes in terms of complexity, overhead and
-efficiency are well-recognized and led to new alternatives to be considered.
+efficiency are well-recognized and led to other alternatives to be considered.
 
 __Locator-ID separation architectures__
 
 LISP {{!RFC6830}} was the first proposal to distinguish between the usage of IP
-addresses as locators or identifiers by explicitely defining two namespaces,
+addresses as locators or identifiers by explicitly defining two namespaces,
 respectively used for endpoint identification and forwarding. A mapping service
 is further used to bind an identifiers to a given location, and updated after
 mobility. From there, several approaches have been defined, either host-based
-like SHIM6 {{!RFC5533}} or HIP {{!RFC4423}}), or network-based, like LISP, ILSR,
-ILNP or ILA to cite a few.
+like SHIM6 {{!RFC5533}} or HIP {{!RFC4423}}), or network-based, like LISP {{!RFC6830}}, 
+ILSR, ILNP {{!RFC6740}} or ILA {{?I-D.herbert-intarea-ila}} to cite a few.
 	
 An overview of these approaches and their use in mobility is presented in
 {?I-D.bogineni-dmm-optimized-mobile-user-plane}}.
@@ -248,76 +192,43 @@ often departs from this principle.
 
 # Information-Centric Networking (ICN)
 
-ICN identifies a new networking paradigm centering network communication around
+ICN is a new networking paradigm centering network communication around
 named data, rather that host location. Network operations are driven by
-location-independent content names, rather than location identifiers (I
+location-independent data names, rather than location identifiers (IP
 addresses) to gracefully enable user-to-content communication.
 
 Although there exist a few proposals, they share the same set of core
 principles, resulting in several advantages including a simplified mobility
-management {{!RFC7476}}. For clarify, this section will more particularly focus
-on CCN {{?I-D.irtf-icnrg-ccnxsemantics}} which is with NDN among the prominent
-architectures.
-<!--
-An overview of ICN principles and advantages
-for a simplified mobility management resulting from name-based forwarding can be
-found in {{!RFC7476}}.
--->
+management {{!RFC7476}}. For clarify, this section we focus
+on hICN {{?I-D.muscariello-intarea-hicn}} and ICN implementation for IPv6.
 
-## Consumers and producers
 
-In ICN, endpoints can act as consumers and/or producers. Consumers when they
-emit requests for named data packets (so called Interests), producers when they
-send data packets in response to consumers request. Those two roles correspond
-to two different socket types. We talk about a pull-based - or receiver-driven
-- model, in contrast with the sender-driven operational model for IP networks
-today.
 
-Clearly a node can be a consumer and a producer at the same time (e.g. in a
-voice conversation). two sockets will be opened althrough they will be managed
-independently by the network. In particular, they will have different properties
-and requirements in terms of mobility.
+## Hybrid-ICN overview
 
-## Design principles
+Hybrid ICN (hICN) is an ICN architecture that defines integration of ICN
+semantics within IPv6, instead of over/under/aside. The only difference w.r.t.
+ICN as defined in {{?I-D.irtf-icnrg-ccnxsemantics}} is that it encodes names
+inside IP addresses, and thus can use RFC-compliant TCP/IP packets to transport
+ICN semantics.
 
-Named-Data
-: Information is addressed by location-independent identifiers and network
-operations (forwarding, caching, transport, security) are bound to named-data,
-not location.
-<!-- As forwarding data is fully contained in routers' FIBs, this
-avoids the need to rely on a third-party anchor node or mapping service
-(anchorless forwarding).-->
+The goal of hICN is to ease ICN insertion in existing IP infrastructure by:
 
-Dynamic Forwarding
-: the name-based data plane is stateful. Names are advertised by the routing
-layer, and user requests (interests) are routed by name and a trace of pending
-requests is left to guarantee reverse path routing of corresponding data, to
-enable aggregation (synchronous multicast) and to drive forwarding strategies
-(based on popularity and on network status).
+1. selective insertion of hICN capabilities in a few network nodes at the edge
+(no need for pervasive fully hICN network enablement);
+2. guaranteed transparent interconnection with hICN-unaware IP nodes, without
+using overlays;
+3. minor modification to existing IP routers/endpoints (e.g. reuse of IP FIBs
+and of existing buffers, no modifications to L7 applications and user space hICN
+transport layer introduction in endpoints);
+4. re-use of existing IP control plane (e.g. for routing of IP prefixes carrying
+ID-semantics) along with performing mobility management and caching operations
+in forwarding plane;
+5. fallback capability to tradition IP network/transport layer.
 
-<!-- the opportunity to define fine-grained per-application forwarding and
-security policies. -->
-
-Enhanced Transport
-: ICN is built around a __pull-based connection-less__ transport exploiting this
-stateful data plane. In contrast to sender-based control, this permits fast
-reactivity to mobility, not requiring any source address, and fine-grained
-forwarding decisions allowing simple realization of multihoming, multipath,
-multi-source and multicast distribution. In addition, there is no connection to
-setup, teardown or migrate, nor any state to maintain, which proves particularly
-interesting on producer side.
-
-In-path Caching/Processing
-: Packet forwarding is enriched with in-path buffering and processing
-capabilities. In path buffering is exploited for re-use (asynchronous multicast
-of data via cached replica) and repair (in-network rate/congestion control).
-
-Content-based security
-: This solves the context transfer problem, and the need
-to trust the end point. This moreover allows in-network caching, and the ability
-for the network to part an active part of the communication, for instance for
-transparently supporting multiple sources of content, or helping the transport
-protocol during mobility.
+hICN architecture is described in detail in {{?I-D.muscariello-intarea-hicn}}.
+Together with MAP-Me, it forms the basis for the mobility management
+architecture we describe in the rest of this document.
 
 ## Consumer and producer mobility
 
@@ -326,7 +237,7 @@ __Consumer mobility__
 Due to the pull-based and connection-less properties of hICN
 communications, consumer mobility comes natively with ICN. It is indeed
 sufficient that the consumer reissues pending interests from the new
-point-of-attachment to continue the communication. Consumer mobiliy is
+point-of-attachment to continue the communication. Consumer mobility is
 anchorless by design. As will be discussed below, it is however necessary to
 have appropriate transport layer on top able to cope with the disruptions and
 path variations due to the mobility, at an eventual fine granularity.
@@ -366,85 +277,6 @@ alive traces stored by all involved routers. Forwarding to the new location is
 enabled without tunneling.
 - _Anchorless_ approaches allow the mobile nodes to advertise their mobility to
 the network without requiring any specific node to act as a rendez-vous point.
-
-__Anchorless producer mobility with MAP-Me__
-
-The selected mobility management scheme for the present solution is MAP-Me, an
-anchorless producer mobility management solution originally proposed for ICN
-{{?I-D.irtf-icnrg-mapme}} and {{MAPME}}.
-
-MAP-Me belongs to the class of anchorless approaches that relies on
-scope-limited forwarding updates triggered by producer mobility events to keep
-locally up-to-date FIB information for a low-latency guaranteed reroute of
-consumer Interests towards changing location of the producer.
-
-The difference w.r.t. to other classes of approaches is that it does not
-require an anchor neither in forwarding plane (traffic does not need to pass
-through a specific network node), nor in the control plane (no rendez-vous
-point, no mapping system). It naturally extends the pure ID-based paradigm to
-efficiently support mobility through a lightweight FIB update process. Being
-forwarding-based, it can act at a very fine timescale without raising the
-concern of routing scalability.
-
-The appeal of purely ID-based architectures is that they move Loc/ID
-split one step further by embedding ID-awareness in the network and transport
-layer by default and as such completely decoupling data delivery from
-underlying network connectivity. Forwarding is performed directly based on
-identifiers stored in routers' FIBs and no mapping of ID into locators is
-required. In this way, purely ID-based architectures remove the need to
-maintain a global mapping system at scale, and its intrinsic management
-complexity.
-
-
-## Deployment considerations
-
-Despite years of research and well-recognized advantages, in particular for
-mobility {{!RFC7476}}, service providers are still reluctant to consider ICN as
-a viable alternative for deployment.
-
-Approaches including overlays and slicing, including for 4G and 5G
-architectures, have been extensively reviewed in {{ravindran20175g}},
-{{?I-D.ravi-icnrg-5gc-icn}} and {{?I-D.irtf-icnrg-icn-lte-4g}}.
-{{?I-D.irtf-icnrg-deployment-guidelines}} additionally provides some deployment
-guidelines, along with an overview of the different approaches.
-
-Those studies reveal the intrinsic complexity in deploying clean-slate ICN
-architectures, in particular within operational networks and standardization
-framworks such as the 3GPP's 5G specification for mobile access networks.
-Solutions involve a complex redesign of the high-level architecture, or adopt
-choices drastically reducing the effectiveness of the approach.
-
-This has motivated the design of Hybrid ICN (hICN), an incremental deployment
-solution for ICN into existing IP networks that does not tradeoff any ICN
-principles and benefits like previous partial integration approaches.
-
-## Hybrid-ICN overview
-
-Hybrid ICN (hICN) is an ICN architecture that defines integration of ICN
-semantics within IPv6, instead of over/under/aside. The only difference w.r.t.
-ICN as defined in {{?I-D.irtf-icnrg-ccnxsemantics}} is that it encodes names
-inside IP addresses, and thus can use RFC-compliant TCP/IP packets to transport
-ICN semantics.
-
-The goal of hICN is to ease ICN insertion in existing IP infrastructure by:
-
-1. selective insertion of hICN capabilities in a few network nodes at the edge
-(no need for pervasive fully hICN network enablement);
-2. guaranteed transparent interconnection with hICN-unaware IP nodes, without
-using overlays;
-3. minor modification to existing IP routers/endpoints (e.g. reuse of IP FIBs
-and of existing buffers, no modifications to L7 applications and user space hICN
-transport layer introduction in endpoints);
-4. re-use of existing IP control plane (e.g. for routing of IP prefixes carrying
-ID-semantics) along with performing mobility management and caching operations
-in forwarding plane;
-5. fallback capability to tradition IP network/transport layer.
-
-hICN architecture is described in detail in {{?I-D.muscariello-intarea-hicn}}.
-Together with MAP-Me, it forms the basis for the mobility management
-architecture we describe in the rest of this document.
-
-
 
 # Hybrid-ICN Anchorless Mobility Management (hICN-AMM)
 
@@ -797,7 +629,7 @@ performance of the mobility architecture as a whole.
 The example in {{fig-twoaccess}} considers a mobile node that can move access
 two accesses linked to Access Routers (AR) AR1 and AR2, both connected to the
 Internet though a common gateway (GW). This same setup will be later used to
-illustate the flow of packets during mobility events, eventually specializing AR
+illustrate the flow of packets during mobility events, eventually specializing AR
 into AP or eNB when it makes more sense.
 
 ~~~~
