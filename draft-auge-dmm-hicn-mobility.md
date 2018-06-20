@@ -200,7 +200,7 @@ addresses) to gracefully enable user-to-content communication.
 Although there exist a few proposals, they share the same set of core
 principles, resulting in several advantages including a simplified mobility
 management {{!RFC7476}}. For clarify, this section we focus
-on hICN {{?I-D.muscariello-intarea-hicn}} and ICN implementation for IPv6.
+on hICN {{?I-D.muscariello-intarea-hicn}} an ICN implementation for IPv6.
 
 
 
@@ -306,7 +306,7 @@ protocol in an hICN context. Additional background and details are available in
 
 ## Signalization messages; acknowledgements and retransmission
 
-Signalization messages follow ICN design principles and uses data plane packets
+Signalization messages followhICN design principles and uses data plane packets
 for signalization. Signalization messages and acknowledgement are respectively
 Interest and Data packet according to hICN specification
 {{?I-D.muscariello-intarea-hicn}}. They have respectively a locator (content
@@ -377,27 +377,27 @@ routers AR1 and AR2 while serving user requests:
    reach the producer's new location in AR2.
 
 ~~~~
-    P  (radio link)  AR1               AR2               GW            Internet
-    |                 |                 |                 |                |
-1   |                 |                 |                 |<~~~~~~~~~~~~~~~|
-    |                 |<~~~~~~~~~~~~~~~~|~~~~~~~~~~~~~~~~~|    Interest    |
-    |<~~~~~~~~~~~~~~~~|                 |                 |                |
-    |---------------->|                 |                 |                |
-2  []     Data        |-----------------|---------------->|                |
-  / |                 |                 |                 |--------------->|
-  | | (attach to AR2) |                 |                 |                |
-  -X].................|.................|                 |                |
-3   |=================|================>o FIB update      |                |
-    | Update          |                 |================>o FIB update     |
-4   |                 o<================|=================|                |
-    |      FIB update |                 |                 |                |
-5   |                 |                 |                 |<~~~~~~~~~~~~~~~|
-    |                 |                 |<~~~~~~~~~~~~~~~~|                |
-    |<~~~~~~~~~~~~~~~~|~~~~~~~~~~~~~~~~~|                 |                |
-    |-----------------|---------------->|                 |                |
-    |                 |                 |---------------->|                |
-    |                 |                 |                 |--------------->|
-    |                 |                 |                 |                |
+    P (radio link) AR1             AR2             GW          Internet
+    |               |               |               |              |
+1   |               |               |               |<~~~~~~~~~~~~~|
+    |               |<~~~~~~~~~~~~~~|~~~~~~~~~~~~~~~|  Interest    |
+    |<~~~~~~~~~~~~~~|               |               |              |
+    |-------------->|               |               |              |
+2  []    Data       |---------------|-------------->|              |
+  / |               |               |               |------------->|
+  | |(attach to AR2)|               |               |              |
+  -X]...............|...............|               |              |
+3   |===============|==============>o FIB update    |              |
+    | Update        |               |==============>o FIB update   |
+4   |               o<==============|===============|              |
+    |    FIB update |               |               |              |
+5   |               |               |               |<~~~~~~~~~~~~~|
+    |               |               |<~~~~~~~~~~~~~~|              |
+    |<~~~~~~~~~~~~~~|~~~~~~~~~~~~~~~|               |              |
+    |---------------|-------------->|               |              |
+    |               |               |-------------->|              |
+    |               |               |               |------------->|
+    |               |               |               |              |
 ~~~~
 {: #fig-mapme-update title="Signalization during producer mobility (MAP-Me)"}
 
@@ -475,28 +475,28 @@ producer within a few hops.
 to the producer before it had the time to complete the update.
 
 ~~~~
-    P  (radio link)  AR1               AR2               GW            Internet
-    |                 |                 |                 |                |
-1   |                 |                 |                 |<~~~~~~~~~~~~~~~|
-    |                 |<~~~~~~~~~~~~~~~~|~~~~~~~~~~~~~~~~~|    Interest    |
-    |<~~~~~~~~~~~~~~~~|                 |                 |                |
-    |---------------->|                 |                 |                |
-2  [].....Data.......-)-----------------|---------------->|                |
-  / |                 |                 |                 |--------------->|
-  | | (attach to AR2) |                 |                 |                |
-  -Y].................|.................+                 |                |
-3   |                 |                 |                 |<~~~~~~~~~~~~~~~|
-4   |              X--|<~~~~~~~~~~~~~~~~|~~~~~~~~~~~~~~~~~|                |
-    |                 |                 |                 |                |
-5   |=================|================>o FIB update      |                |
-    | Notification    |                 |                 |                |
-    |                 |~~~~~~~~~~~~~~~~>| (scoped discovery)               |
-6   |<~~~~~~~~~~~~~~~~|~~~~~~~~~~~~~~~~~|                 |                |
-7   |-----------------|---------------->|                 |                |
-    |                 |<----------------|                 |                |
-    |                 |-----------------|---------------->|                |
-    |                 |                 |                 |--------------->|
-    |                 |                 |                 |                |
+    P (radio link) AR1             AR2             GW          Internet
+    |               |               |               |              |
+1   |               |               |               |<~~~~~~~~~~~~~|
+    |               |<~~~~~~~~~~~~~~|~~~~~~~~~~~~~~~|   Interest   |
+    |<~~~~~~~~~~~~~~|               |               |              |
+    |-------------->|               |               |              |
+2  [].....Data.....-)---------------|-------------->|              |
+  / |               |               |               |------------->|
+  | |(attach to AR2)|               |               |              |
+  -Y]...............|...............+               |              |
+3   |               |               |               |<~~~~~~~~~~~~~|
+4   |            X--|<~~~~~~~~~~~~~~|~~~~~~~~~~~~~~~|              |
+    |               |               |               |              |
+5   |===============|==============>o FIB update    |              |
+    | Notification  |               |               |              |
+    |               |~~~~~~~~~~~~~~>| (scoped discovery)           |
+6   |<~~~~~~~~~~~~~~|~~~~~~~~~~~~~~~|               |              |
+7   |---------------|-------------->|               |              |
+    |               |<--------------|               |              |
+    |               |---------------|-------------->|              |
+    |               |               |               |------------->|
+    |               |               |               |              |
 ~~~~
 {: #fig-mapme-discovery title="Scoped discovery during producer mobility" }
 
@@ -569,8 +569,8 @@ producer mobility.
 
 ## Overview
 
-__Native mobility__ : This mobility management process follows and exploits ICN
-and hICN design principles. It makes producer mobility native in the
+__Native mobility__ : This mobility management process follows and exploits
+hICN design principles. It makes producer mobility native in the
 architecture by preserving all benefits of hICN even when consumers and/or
 producers are moving.
 
@@ -598,7 +598,7 @@ As emerges from the points raised in the previous section, consumer mobility is
 transparently supported by an hICN network in virtue of the pull-based model and
 stateful forwarding state in packet-caches. The only requirement is to have a
 compatible transport layer able to cope with multihoming, multipath and
-multisource characteristics of ICN data transfers.
+multisource characteristics ofhICN data transfers.
 
 After moving, a consumer can just reissue pending interests once attached to the
 new access router at layer 2, without requiring any more information from L3 and
@@ -633,12 +633,12 @@ illustrate the flow of packets during mobility events, eventually specializing A
 into AP or eNB when it makes more sense.
 
 ~~~~
-             +-----+                        .-~~~-.
-         _,--+ AR1 +--,             .- ~ ~-(       )_ _
-+-----+ /    +-----+   \ +----+    |                     ~ -.         +-----+
-|  C  +=                =+ GW +----+        Internet         \---//---+  P  |
-+-----+ \_   +-----+   / +----+     \                       .'        +-----+
-          '--+ AR2 +--'              ~- . _____________ . -~
+             +-----+                        .-~-.
+         _,--+ AR1 +--,             .- ~ ~-(     )_ _
++-----+ /    +-----+   \ +----+    |                  ~-.        +-----+
+|  C  +=                =+ GW +----+       Internet       \--//--+  P  |
++-----+ \_   +-----+   / +----+     \                    .'      +-----+
+          '--+ AR2 +--'              ~- . ___________.-~
              +-----+
 ~~~~
 {: #fig-twoaccess title="Simple topology with a multi-homed consumer"}
@@ -649,26 +649,26 @@ the Internet.
 
 
 ~~~~
-    C                AR1               AR2               GW            Internet
-    |                 |                 |                 |                |
-1   |~~~~~~~~~~~~~~~~>|                 |                 |                |
-    |   Interest X    |~~~~~~~~~~~~~~~~~|~~~~~~~~~~~~~~~~>|                |
-    |                 |                 |                 |~~~~~~~~~~~~~~~>|
-    |                 |                 |                 |                |...
-    |                 |                 |                 |<---------------|
-    |      Data X     |<----------------|-----------------|                |
-    |<----------------|                 |                 |                |
-    |                 |                 |                 |                |
-2   |~~~~~~~~~~~~~~~~>|                 |                 |                |
-3   |   Interest Y    |~~~~~~~~~~~~~~~~~|~~~~~~~~~~~~~~~~>X Cache hit      |
-    |                 |<----------------|-----------------X                |
-    |<----------------|                 |                 |                |
-    |     Data Y      |                 |                 |                |
+    C              AR1             AR2             GW          Internet
+    |               |               |               |              |
+1   |~~~~~~~~~~~~~~>|               |               |              |
+    |  Interest X   |~~~~~~~~~~~~~~~|~~~~~~~~~~~~~~>|              |
+    |               |               |               |~~~~~~~~~~~~~>|
+    |               |               |               |              |...
+    |               |               |               |<-------------|
+    |     Data X    |<--------------|---------------|              |
+    |<--------------|               |               |              |
+    |               |               |               |              |
+2   |~~~~~~~~~~~~~~>|               |               |              |
+3   |  Interest Y   |~~~~~~~~~~~~~~~|~~~~~~~~~~~~~~>X Cache hit    |
+    |               |<--------------|---------------X              |
+    |<--------------|               |               |              |
+    |    Data Y     |               |               |              |
 
 
 LEGEND:
-~~~~>: Interest     <---- Data     ====> Signalization     X failure    o event
-....-: L2 detach    .....+ L2 attach
+~~~~>: Interest     <---- Data     ====> Signalization
+....-: L2 detach    .....+ L2 attach         X failure    o event
 
 ~~~~
 {: #fig-latency title="Reduced latency through caching" }
@@ -693,20 +693,20 @@ responsible for packet losses. {{fig-loss-cache}} considers a similar scenario
 with a lossy channel (eg. WiFi) between the mobile and the first access router.
 
 ~~~~
-    C  (radio link)  AR1               AR2               GW            Internet
-    |                 |                 |                 |                |
-1   |~~~~~~~~X        |                 |                 |                |
-2   |~~~~~~~~~~~~~~~~>|                 |                 |                |
-    |   Interest      |~~~~~~~~~~~~~~~~~|~~~~~~~~~~~~~~~~>|                |
-    |                 |                 |                 |~~~~~~~~~~~~~~~>|
-    |                 |                 |                 |                | ...
-    |                 |                 |                 |<---------------|
-    |      Data       |<----------------|-----------------|                |
-3   |        X--------|                 |                 |                |
-    |                 |                 |                 |                |
-4   |~~~~~~~~~~~~~~~~>X Cache hit       |                 |                |
-    |<----------------X                 |                 |                |
-    |                 |                 |                 |                |
+    C (radio link) AR1             AR2             GW          Internet
+    |               |               |               |              |
+1   |~~~~~~~X       |               |               |              |
+2   |~~~~~~~~~~~~~~>|               |               |              |
+    |  Interest     |~~~~~~~~~~~~~~~|~~~~~~~~~~~~~~>|              |
+    |               |               |               |~~~~~~~~~~~~~>|
+    |               |               |               |              | ...
+    |               |               |               |<-------------|
+    |     Data      |<--------------|---------------|              |
+3   |       X-------|               |               |              |
+    |               |               |               |              |
+4   |~~~~~~~~~~~~~~>X Cache hit     |               |              |
+    |<--------------X               |               |              |
+    |               |               |               |              |
 ~~~~
 {: #fig-loss-cache title="IU propagation example"}
 
@@ -735,23 +735,23 @@ protocol, so that only losses due to congestion are exposed to it, and don't
 perturb the feedback loop by unnecessarily reducing the transfer rate.
 
 ~~~~
-    C  (radio link)  AR1               AR2               GW            Internet
-    |                 |                 |                 |                |
-1   |~~~~~~~~~~~~~~~~>|                 |                 |                |
-    |   Interest      |~~~~~~~~~~~~~~~~~|~~~~~~~~~~~~~~~~>|                |
-    |                 |                 |                 |~~~~~~~~~~~~~~~>|
-    |(detach from AR1)|                 |                 |                |
-2 ..|.................-                 |                 |<---------------|
-    |                 |<----------------|-----------------|                |
-3   |         Data X--|                 |                 |                |
-    |                 |                 |                 |                |
-    | (attach to AR2  |                 |                 |                |
-4 ..|.................|.................+                 |                |
-5   |~~~~~~~~~~~~~~~~~|~~~~~~~~~~~~~~~~>|                 |                |
-6   |                 |                 |~~~~~~~~~~~~~~~~>X Cache hit      |
-    |                 |                 |<----------------X                |
-    |<----------------|-----------------|                 |                |
-    |                 |                 |                 |                |
+    C (radio link) AR1             AR2             GW          Internet
+    |               |               |               |              |
+1   |~~~~~~~~~~~~~~>|               |               |              |
+    |  Interest     |~~~~~~~~~~~~~~~|~~~~~~~~~~~~~~>|              |
+    |               |               |               |~~~~~~~~~~~~~>|
+    |(detach fm AR1)|               |               |              |
+2 ..|...............-               |               |<-------------|
+    |               |<--------------|---------------|              |
+3   |        Data X-|               |               |              |
+    |               |               |               |              |
+    |(attach to AR2 |               |               |              |
+4 ..|...............|...............+               |              |
+5   |~~~~~~~~~~~~~~~|~~~~~~~~~~~~~~>|               |              |
+6   |               |               |~~~~~~~~~~~~~~>X Cache hit    |
+    |               |               |<--------------X              |
+    |---------------|---------------|               |              |
+    |               |               |               |              |
 ~~~~
 {: #fig-mobility-cache title="IU propagation example"}
 
@@ -775,25 +775,25 @@ access.
 transparently for the application.
 
 ~~~~
-   C           WiFi           GW          LTE enB         PGW         Internet
-   |             |             |             |             |             |
-1  |~~~~~~~~~~~~>|             |             |             |             |
-   |             |~~~~~~~~~~~~>|             |             |             |
-   |             |             |~~~~~~~~~~~~~|~~~~~~~~~~~~~|~~~~~~~~~~~~>|
-   |             |             |             |             |             |
-   |             |             |<------------|-------------|-------------|
-   |             |<------------|             |             |             |
-   |<------------|             |             |             |             |
-2  |             X             |             |             |             |
-3  |~~~~~~~~~~~~~X~~~~~~~~~~~~~|~~~~~~~~~~~~>|             |             |
-   |             X             |             |~~~~~~~~~~~~>|             |
-   |             X             |             |             |~~~~~~~~~~~~>|
-   |             |             |             |             |             |
-   |             |             |             |             |<------------|
-   |             |             |             |<------------|             |
-   |<------------|-------------|-------------|             |             |
-4  |~~~~~~~~~~~~>|...          |             |             |             |
-   |             |             |             |             |             |
+   C          WiFi          GW         LTE enB        PGW       Internet
+   |            |            |            |            |            |
+1  |~~~~~~~~~~~>|            |            |            |            |
+   |            |~~~~~~~~~~~>|            |            |            |
+   |            |            |~~~~~~~~~~~~|~~~~~~~~~~~~|~~~~~~~~~~~>|
+   |            |            |            |            |            |
+   |            |            |<-----------|------------|------------|
+   |            |<-----------|            |            |            |
+   |<-----------|            |            |            |            |
+2  |            X            |            |            |            |
+3  |~~~~~~~~~~~~X~~~~~~~~~~~~|~~~~~~~~~~~>|            |            |
+   |            X            |            |~~~~~~~~~~~>|            |
+   |            X            |            |            |~~~~~~~~~~~>|
+   |            |            |            |            |            |
+   |            |            |            |            |<-----------|
+   |            |            |            |<-----------|            |
+   |<-----------|------------|------------|            |            |
+4  |~~~~~~~~~~~>|...         |            |            |            |
+   |            |            |            |            |            |
 ~~~~~
 {: #fig-mobility-seamless title="Seamless mobility between a WiFi and a LTE access point}
 
@@ -848,21 +848,21 @@ optimizal split. Note that in that case the relative distances on the vertical
 axis have not been respected here for reability.
 
 ~~~~
-   C           WiFi           GW          LTE enB         PGW         Internet
-   |             |             |             |             |             |
-   |~~~~~~~~~~~~~|~~~~~~~~~~~~~|~~~~~~~~~~~~>|             |             |
-   |~~~~~~~~~~~~>|             |             |~~~~~~~~~~~~>|~~~~~~~~~~~~>|
-   |             |~~~~~~~~~~~~>|             |             |             |
-   |             |             |~~~~~~~~~~~~~|~~~~~~~~~~~~~|~~~~~~~~~~~~>|
-   |             |             |             |             |             |
-   |             |             |             |             |<------------|
-   |             |             |             |<------------|             |
-   |<------------|-------------|-------------|             |             |
-   |             |             |<------------|-------------|-------------|
-   |             |<------------|             |             |             |
-   |<------------|             |             |             |             |
-   |             |             |             |             |             |
-   |             |             |             |             |             |
+   C          WiFi          GW         LTE enB        PGW       Internet
+   |            |            |            |            |            |
+   |~~~~~~~~~~~~|~~~~~~~~~~~~|~~~~~~~~~~~>|            |            |
+   |~~~~~~~~~~~>|            |            |~~~~~~~~~~~>|~~~~~~~~~~~>|
+   |            |~~~~~~~~~~~>|            |            |            |
+   |            |            |~~~~~~~~~~~~|~~~~~~~~~~~~|~~~~~~~~~~~>|
+   |            |            |            |            |            |
+   |            |            |            |            |<-----------|
+   |            |            |            |<-----------|            |
+   |<-----------|------------|------------|            |            |
+   |            |            |<-----------|------------|------------|
+   |            |<-----------|            |            |            |
+   |<-----------|            |            |            |            |
+   |            |            |            |            |            |
+   |            |            |            |            |            |
 ~~~~
 
 Fine grained control from the application allows fully exploiting available
@@ -909,32 +909,32 @@ between a consumer connected to AR3, and a mobile producer moving from AR1 to
 AR2.
 
 ~~~~
-    C          P         AR1        AR2        AR3         GW   X     Internet
-    |          |          |          |          |          |    X         |
-    |~~~~~~~~~~|~~~~~~~~~~|~~~~~~~~~~|~~~~~~~~~>|          |    X         |
-    |          |          |          |          |~~~~~~~~~>|    X         |
-    |          |          |<~~~~~~~~~|~~~~~~~~~~|~~~~~~~~~~|    X         |
-    |          |<~~~~~~~~~|          |          |          |    X         |
-    |          |--------->|          |          |          |    X         |
-    |          |          |----------|----------|--------->|    X         |
-    |          |          |          |          |<---------|    X         |
-    |<---------|----------|----------|----------|          |    X         |
-    |          |          |          |          |          |    X         |
-    |          |..........-          |          |          |    X         |
-    |          |..........|..........+          |          |    X         |
-    |          |==========|=========>o          |          |    X   NO    |
-    |          | Update   |          |==========|=========>o    X TRAFFIC |
-    |          |          o<=========|==========|==========|    X         |
-    |          |          |          |          |          |    X         |
-    |~~~~~~~~~~|~~~~~~~~~~|~~~~~~~~~~|~~~~~~~~~>|          |    X         |
-    |          |          |          |          |~~~~~~~~~>|    X         |
-    |          |          |          |<~~~~~~~~~|~~~~~~~~~~|    X         |
-    |          |<~~~~~~~~~|~~~~~~~~~~|          |          |    X         |
-    |          |----------|--------->|          |          |    X         |
-    |          |          |          |----------|--------->|    X         |
-    |          |          |          |          |<---------|    X         |
-    |<---------|----------|----------|----------|          |    X         |
-    |          |          |          |          |          |    X         |
+C         P         AR1        AR2        AR3         GW  X    Internet
+|         |          |          |          |          |   X         |
+|~~~~~~~~~|~~~~~~~~~~|~~~~~~~~~~|~~~~~~~~~>|          |   X         |
+|         |          |          |          |~~~~~~~~~>|   X         |
+|         |          |<~~~~~~~~~|~~~~~~~~~~|~~~~~~~~~~|   X         |
+|         |<~~~~~~~~~|          |          |          |   X         |
+|         |--------->|          |          |          |   X         |
+|         |          |----------|----------|--------->|   X         |
+|         |          |          |          |<---------|   X         |
+|<--------|----------|----------|----------|          |   X         |
+|         |          |          |          |          |   X         |
+|         |..........-          |          |          |   X         |
+|         |..........|..........+          |          |   X         |
+|         |==========|=========>o          |          |   X   NO    |
+|         | Update   |          |==========|=========>o   X TRAFFIC |
+|         |          o<=========|==========|==========|   X         |
+|         |          |          |          |          |   X         |
+|~~~~~~~~~|~~~~~~~~~~|~~~~~~~~~~|~~~~~~~~~>|          |   X         |
+|         |          |          |          |~~~~~~~~~>|   X         |
+|         |          |          |<~~~~~~~~~|~~~~~~~~~~|   X         |
+|         |<~~~~~~~~~|~~~~~~~~~~|          |          |   X         |
+|         |----------|--------->|          |          |   X         |
+|         |          |          |----------|--------->|   X         |
+|         |          |          |          |<---------|   X         |
+|<--------|----------|----------|----------|          |   X         |
+|         |          |          |          |          |   X         |
 ~~~~
 {: #fig-disconnected title="Anchoress mobility in network disconnected from core"}
 
