@@ -202,38 +202,30 @@ principles, resulting in several advantages including a simplified mobility
 management {{!RFC7476}}. For clarify, this section we focus
 on hICN {{?I-D.muscariello-intarea-hicn}} an ICN implementation for IPv6.
 
-
-
 ## Hybrid-ICN overview
 
 Hybrid ICN (hICN) is an ICN architecture that defines integration of ICN
-semantics within IPv6, instead of over/under/aside. The only difference w.r.t.
-ICN as defined in {{?I-D.irtf-icnrg-ccnxsemantics}} is that it encodes names
-inside IP addresses, and thus can use RFC-compliant TCP/IP packets to transport
-ICN semantics.
-
+semantics within IPv6.
 The goal of hICN is to ease ICN insertion in existing IP infrastructure by:
 
 1. selective insertion of hICN capabilities in a few network nodes at the edge
-(no need for pervasive fully hICN network enablement);
-2. guaranteed transparent interconnection with hICN-unaware IP nodes, without
+(no need for pervasive fully hICN network deployments);
+2. guaranteed transparent interconnection with hICN-unaware IPv6 nodes, without
 using overlays;
-3. minor modification to existing IP routers/endpoints (e.g. reuse of IP FIBs
-and of existing buffers, no modifications to L7 applications and user space hICN
-transport layer introduction in endpoints);
+3. minor modification to existing IP routers/endpoints;
 4. re-use of existing IP control plane (e.g. for routing of IP prefixes carrying
 ID-semantics) along with performing mobility management and caching operations
 in forwarding plane;
 5. fallback capability to tradition IP network/transport layer.
 
-hICN architecture is described in detail in {{?I-D.muscariello-intarea-hicn}}.
-Together with MAP-Me, it forms the basis for the mobility management
+hICN architecture is described in {{?I-D.muscariello-intarea-hicn}}.
+Together with MAP-Me {{?I-D.irtf-icnrg-mapme}}, it forms the basis for the mobility management
 architecture we describe in the rest of this document.
 
 ## Consumer and producer mobility
 
 __Consumer mobility__
-
+The consumer end-point is the logical communication termination that receives data.
 Due to the pull-based and connection-less properties of hICN
 communications, consumer mobility comes natively with ICN. It is indeed
 sufficient that the consumer reissues pending interests from the new
@@ -243,21 +235,16 @@ have appropriate transport layer on top able to cope with the disruptions and
 path variations due to the mobility, at an eventual fine granularity.
 
 __Producer mobility__
-
-<!--
-Producers are answering to interests and need to be continuously reachable
-though information in network FIBs.
--->
-
+The producer end-point is the logical communication termination that sends data.
 Producer mobility is not natively supported by the architecture, rather handled
-in different ways according to the selected producer mobility management scheme,
+in different ways according to the selected producer mobility management scheme.,
 some of which diverge from the concept of pure ID-based architecture through
 their use of locators.
 
 In fact, many schemes proposed for ICN are adaptations to the vast amount of
 work made in IP over the last two decades {{!RFC6301}}. Surveys for the ICN
 family, resp. for CCN/NDN-specific solutions, are available in {{SURVEYICN}},
-resp. {{SURVEY1}} and {{SURVEY2}}. There has been however a recent trend towards
+respectively {{SURVEY1}} and {{SURVEY2}}. There has been however a recent trend towards
 anchorless mobility management, facilitated by ICN design principles, that has
 led to new proposals and an extension of previous classifications in
 {{?I-D.irtf-icnrg-mapme}} and {{MAPME}} to the four following categories:
@@ -279,11 +266,9 @@ enabled without tunneling.
 the network without requiring any specific node to act as a rendez-vous point.
 
 # Hybrid-ICN Anchorless Mobility Management (hICN-AMM)
-
-<!--
-A direct consequence of the pull-based architecture is that only producer
-mobility has to be handled by the network.
--->
+The consumer end-point does not require mobility management. So any time an
+end-host fetches data from a data source, mobility is managed by hICN 
+without any impact the transport session.
 
 Producer mobility is not natively supported by hICN, and additional procedures
 have to be performed to maintain reachability as it moves in the network.
@@ -291,7 +276,7 @@ have to be performed to maintain reachability as it moves in the network.
 In an hICN network, regular routing protocols such as BGP, ISIS or OSPF can be
 used for propagating all prefix announcements and populate routers' FIBs.
 However, these protocols are not appropriate and should not be used to manage
-content prefix mobility, for scalability and consistency reasons.
+name prefix mobility, for scalability and consistency reasons.
 
 The default mobility management for hICN is designed following the same
 principles and protocols as MAP-Me, an anchorless producer mobility management
@@ -306,17 +291,12 @@ protocol in an hICN context. Additional background and details are available in
 
 ## Signalization messages; acknowledgements and retransmission
 
-Signalization messages followhICN design principles and uses data plane packets
+Signalization messages follow hICN design principles and use data plane packets
 for signalization. Signalization messages and acknowledgement are respectively
-Interest and Data packet according to hICN specification
-{{?I-D.muscariello-intarea-hicn}}. They have respectively a locator (content
-identifier) as source, and content identifier (locator) as destination, and are
-thus punted by the regular hICN forwarding pipeline. They are forwarded based on
-FIB information of the intermediate routers, and as such Signalization Interests
-processing do not involve any locator address.
-
+Interest and Data packet (requests and replies) according to hICN terminology
+{{?I-D.muscariello-intarea-hicn}}. 
 Upon processing of those advertisements, the network will send an
-acknowledgement back to the producer using the content prefix as the source and
+acknowledgement back to the producer using the name prefix as the source and
 the locator of the producer as the destination, plus the sequence number
 allowing the producer to match which update has been acknowledged.
 
@@ -335,12 +315,12 @@ packets to be sent to the joined network.
 
 Those advertisements should contain:
 
-- the content prefix as the destination address, plus a field indicating the
+- the name prefix as the destination address, plus a field indicating the
 associated prefix length;
 - the locator of the producer as the source address, that will serve for
 receiving acknowledgements;
 - a sequence number sequentially increased by the producer after each movement;
-- a security token (see {{sec-security}}.
+- a security token (see {{sec-security}}).
 
 Upon producer departures from a PoA, the corresponding face is destroyed. If
 this leads to the removal of the last next hop, then faces that were previously
@@ -356,7 +336,7 @@ this change.
 The update process consists in updating a few routers on the path between the
 new and a former point-of-attachment. More precisely, this is done in a purely
 anchorless fashion by sending a signalling message from the new location towards
-the content prefix itself. This packet will be forwarded based on the now-stale
+the name prefix itself. This packet will be forwarded based on the now-stale
 FIB entries, and will update forwarding entries to point to the ingress
 interfaces of each traversed router.
 
@@ -403,11 +383,9 @@ routers AR1 and AR2 while serving user requests:
 
 Through this process, MAP-Me trades-off path optimality for a fast, lightweight
 and loop-free forwarding update. It has been shown in {{MAPME}} that stretch is
-bounded and typically kept low in scenarios of interest: the metric of interest
-is in fact the user flow performance resulting from the interaction between
-traffic demand and network capacity. This results from the fact that MAP-Me
-operations preserve the initial structure of the forwarding tree/DAG, by only
-flipping its edges to point to the new producer location.
+bounded and typically kept low in scenarios of interest. This results from the fact that MAP-Me
+operations preserve the initial structure of the forwarding tree/DAG (direct acyclic graph), by only
+flipping its edges toward the new producer location.
 
 MAP-Me does not perform a routing update. The protocol is complementary to the
 routing protocol in that it can run in between routing updates to handle
@@ -419,7 +397,7 @@ relocated for instance.
 
 The update messages should contain :
 
-- the content prefix as the destination address, plus a field indicating the
+- the name prefix as the destination address, plus a field indicating the
 associated prefix length;
 - the locator of the producer as the source address, that will serve for
 receiving acknowledgements;
@@ -675,7 +653,7 @@ LEGEND:
 
 Numbers on the left refer to the following comments relative to the data flow:
 
-1. The consumer issues a first interest towards content X, which is transported
+1. The consumer issues a first interest towards name prefix X, which is transported
    up to the producer. A Data packet comes back following the reverse path and
    populating intermediate caches. Latency of the exchange can be seen by the
    distance between lines on the vertical axis.
