@@ -67,7 +67,7 @@ informative:
 This document presents how mobility management is handled in Hybrid-ICN {{?I-D.muscariello-intarea-hicn}}.
 The objective of the document is to present how end-points mobility is managed in two main cases:
 the end-point sends data (data producer ) or the end-point receive data (data consumer).
-These two cases are taken into account entirely to provide anchorless mobility management.
+These two cases are taken into account entirely to provide anchorless mobility management in hICN.
 
 --- middle	
 
