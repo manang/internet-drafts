@@ -650,7 +650,7 @@ The operations in the forwarding pipeline for IU/IN processing are reported in
 {{alg-update}}.
 
 ~~~~~~~~~~
-  | Algorithm 1:ForwardSpecialInterest(SpecialInterest SI, IngressFace F)
+  | Algorithm 1:ForwardSpecialInterest(SpecialInterest SI,IngressFace F)
   |
   |  CheckValidity()
   |  // Retrieve the FIB entry associated to the prefix
