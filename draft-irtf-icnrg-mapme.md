@@ -119,24 +119,23 @@ mobility, security, and storage within the network architecture, hence emerging
 as a promising 5G technology candidate. Specifically on mobility management, ICN
 has the potential to relieve  limitations of the existing approaches by leveraging
 its primary feature, the redefinition of  packet forwarding based on
-"names" rather than "network addresses". We believe that removing the dependence
-on location identifiers is a first step in the direction of removing the need
-for any anchoring of communications into fixed network nodes, which may
-considerably simplify and improve mobility management. Within the ICN paradigm,
-several architectures have been proposed, as reported in
-{{SURVEY14}} and {{SURVEY12}}.
+"names" rather than "network addresses". Removing the dependence on location
+identifiers is a first step in the direction of removing the need for any
+anchoring of communications into fixed network nodes, which may considerably
+simplify and improve mobility management. Within the ICN paradigm, several
+architectures have been proposed, as reported in {{SURVEY12}} and {{SURVEY14}}.
 
 As a direct result of CCN/NDN design principles, consumer mobility
-is natively supported}: a change in  physical location for the consumer
+is natively supported: a change in  physical location for the consumer
 does not translate into a change in the data plane like for IP. The
-retransmission of requests for data not yet received by the consumers
+retransmission of requests for data not yet received by the consumer
 takes place without involving any signaling to the network. Producer
 mobility and realtime group communications present more challenges,
 depending on the frequency of movements, latency requirements, and
 content lifetime. The topology does not reflect the naming structure,
-and we have to preserve key functionalities such as multipath, caching,
-etc. In all cases, beyond providing connectivity guarantees, additional
-transport-level mechanisms might be required to protect the flow
+and the mobility management process has to preserve key functionalities such as
+multipath, caching, etc. In all cases, beyond providing connectivity guarantees,
+additional transport-level mechanisms might be required to protect the flow
 performance (see {{WLDR}} for instance).
 
 MAP-Me aims at tackling such problems by exploiting key CCN/NDN characteristics.
@@ -146,12 +145,12 @@ existing CCN/NDN request/data packet structures to trace producer
 movements and to dynamically build a reverse-forwarding path (see
 {{SURVEY16b}} for a survey). They still rely on a stable home address to
 inform about producer movements or on buffering of incoming requests at the
-producer's previous point of attachment -- PoA --, which prevents support for
-latency-sensitive streaming applications. We focus on this class of applications
-(e.g. live streaming or videoconferencing) as they have the most stringent
-performance requirements: negligible per-packet loss-rate and delays. In
-addition, they typically originate from a single producer and don't allow for
-the use of caching.
+producer's previous point of attachment (PoA), which prevents support for
+latency-sensitive streaming applications. The approach presented in this
+document focuses on this class of applications (e.g. live streaming or
+videoconferencing) as they have the most stringent performance requirements:
+negligible per-packet loss-rate and delays. In addition, they typically
+originate from a single producer and don't allow for the use of caching.
 
 MAP-Me defines a name-based mechanism operating in the forwarding plane
 and completely removing any anchoring, while aiming at latency minimization. Its
@@ -165,10 +164,10 @@ analyzed in {{MAPME}}.
 
 Many efforts have been made to define mobility-management models for IP
 networks in the last two decades, resulting in a variety of complex, often not
-implemented, proposals. A good survey of these approaches is {{RFC6301}}.
-Likewise, within the ICN family, different approaches to mobility management
+implemented, proposals. A survey of these approaches is proposed in {{RFC6301}}.
+Likewise, within ICN, different approaches to mobility management
 have been presented {{SURVEY13}}. Specifically for the CCN/NDN solutions,
- several surveys of mobility-management approaches can be found {{SURVEY16a}},
+ several surveys of mobility-management approaches can be found {{SURVEY16a}}
 {{SURVEY16b}}.
 
 We follow here the classification presented in {{MAPME}} which highlights their
@@ -197,16 +196,6 @@ locators and extend the ICN forwarding mechanisms with mobility support.
   network to restore connectivity. This effectively realizes traffic off-load
   close to the end-users.
 
-- __Fast and lightweight__ : MAP-Me _does not rely on routing updates_, which
-  would be too slow and too costly, but rather works at a faster timescale
-  propagating forwarding updates on a single path and leveraging real-time
-  notifications left as breadcrumbs by the producer to enable live tracking of
-  its content prefixes. This enables the support of high-speed mobility and
-  real-time group applications. In addition, MAP-Me mobility updates are issued
-  at prefix granularity, rather than content or chunk/packet granularity, to
-  minimize signaling overhead and temporary state kept by in-network nodes, and
-  scale to large and dynamic mobile networks.
-
 - __Transparent__ : MAP-Me does not involve any name nor modifications to basic
   request/reply operations to be compatible with standard CCN/NDN design and to
   avoid issues caused by name modifications like triangular routing, caching
@@ -214,14 +203,18 @@ locators and extend the ICN forwarding mechanisms with mobility support.
   producer to be aware of the mobility of the remote endpoint, nor producers to
   perform handover prediction.
 
-- __Reactive__: MAP-Me works at forwarding layer to enable updates in FIBs at
-  network latency, i.e. round-trip time scale. It shares the use of data plane
-  mechanisms for ensuring connectivity with {{DATAPLANE}} which was originally
-  proposed for link failures. Specific mechanisms are defined, referred to as
-  network notifications and discovery, to maximise reactivity in mobility
-  management in case of real-time producer tracking and of latency-sensitive
-  communications. For the same purpose, it avoids interest buffering at
-  intermediate routers.
+- __Reactive and lightweight__ : MAP-Me _does not rely on routing updates_, which
+  would be too slow and too costly, but rather works at a faster timescale
+  propagating forwarding updates on a single path and leveraging real-time
+  notifications left as breadcrumbs by the producer to enable live tracking of
+  its content prefixesn and avoid bufferring at intermediate nodes. MAP-Me
+  shares the use of data plane mechanisms for ensuring connectivity with
+  {{DATAPLANE}} which was originally proposed for link failures. This enables
+  the support of high-speed mobility and real-time group applications. In
+  addition, MAP-Me mobility updates are issued at prefix granularity, rather
+  than content or chunk/packet granularity, to minimize signaling overhead and
+  temporary state kept by in-network nodes, and scale to large and dynamic
+  mobile networks.
 
 - __Robust__ : to network conditions (e.g. routing failure, wireless or
   congestion losses, and delays), by leveraging hop-by-hop retransmissions of
@@ -260,11 +253,11 @@ Interest as a mobility update and to process it accordingly to update their FIBs
 (a detailed description of the IU processing is provided in {{sec-algos}}.
 
 The key aspect of the proposal is that it removes the need for a stable home
-address (present in Tracing-Based approaches for instance) by directly
-leveraging name-based forwarding state created by CCN/NDN routing protocols or
-left by previous mobility updates. FIB updates are triggered by the reception of
-mobility updates in a fully distributed way and allow a modification on-the-fly
-to point to the latest known location of the producer.
+address by directly leveraging name-based forwarding state created by CCN/NDN
+routing protocols or left by previous mobility updates. FIB updates are
+triggered by the reception of mobility updates in a fully decentralized way and
+allow a modification on-the-fly to point to the latest known location of the
+producer.
 
 ## Update propagation
 
@@ -381,10 +374,10 @@ stops when the IU reaches P0 and there is no next hop to forward it. The result
 is that the original tree rooted in P0 becomes re-rooted in P1
 ({{fig-proposal-iu-3}}). Looking at the different connected regions
 (represented with dotted lines), we see that IU propagation and consequent FIB
-updates have the effect of extending the newly connected subtree (represented as
-a red cloud): at every step, an additional router and its predecessors are
-included in the connected subtree. The properties of the update propagation
-process in terms of bounded length and stretch are studied in {{MAPME}}.
+updates have the effect of extending the newly connected subtree : at every
+step, an additional router and its predecessors are included in the connected
+subtree. The properties of the update propagation process in terms of bounded
+length and stretch are studied in {{MAPME}}.
 
 ## Concurrent updates
 
@@ -392,11 +385,9 @@ Frequent mobility of the producer may lead to the propagation of concurrent
 updates. To prevent inconsistencies in FIB updates, MAP-Me maintains a
 sequence number at the producer end that increases at each handover and
 identifies every IU packet. Network routers also keep track of such sequence
-number in FIB to verify IU freshness. Without detailing the specific operations
-in MAP-Me to guarantee update consistency (whose description is provided in
-{{sec-algos}}, we can say that modification of FIB entries
-is only triggered when the received IU carries a higher sequence number than the
-one locally stored, while the reception of a less recent update determines a
+number in FIB to verify IU freshness. The modification of FIB entries is only
+triggered when the received IU carries a higher sequence number than the one
+locally stored, while the reception of a less recent update determines a
 propagation of a more recent update through the not-yet-updated path.
 
 An example of reconciliation of concurrent updates is illustrated in
@@ -475,7 +466,7 @@ network edge between current and previous producer locations. This allows to
 minimize disconnectivity time and reduce link load, which are the main factors
 affecting user flow performance, as show in {{MAPME}} evaluations.
 
-# Notification protocol and Scope discovery {#sec-mapme-in}
+# Notification protocol and scoped discovery {#sec-mapme-in}
 
 IU propagation in the data plane accelerates forwarding state re-convergence
 w.r.t. routing or resolution-based approaches operating at control plane, and
@@ -541,9 +532,9 @@ Notifications through a heuristic allowing the producer or its PoA to select
 which type of packet to send. One such heuristic consist in sending a IN
 immediately after an attachment and a IU at most every Tu seconds, which allows
 to reduce signaling overhead during periods of high-mobility. The Tu parameter
-allows to tune the timescale at which Updates occur, and lead to a trade-off
-between signaling and discovery overheads {{MAPME}}. The definition of
-heuristics is out of scope for the present draft.
+allows to tune the timescale at which Updates occur, and leads to a trade-off
+between signaling and discovery overhead {{MAPME}}. The definition of
+more advanced heuristics is out of scope for the present draft.
 
 # Implementation
 
@@ -566,7 +557,7 @@ associated acknowledgment (Ack) messages (IU_Ack and IN_Ack). Those flags are
 recognized by the forwarding pipeline to trigger special treatment;
 
 - a "sequence number" to handle concurrent updates and prevent forwarding loops
-during signaling, and to control discovery interests' propagation;
+during signaling, and to control discovery Interests' propagation;
 
 ## Data structures and temporary state
 
@@ -616,21 +607,18 @@ received within t seconds since the packet transmission, IU is retransmitted.
 We define the following function for sending Special Interests of a given type
 on faces F based on FIB entry E.
 
-```
-SendReliably(F, type, E)
-```
+    SendReliably(F, type, E)
 
 It schedules their retransmission through a timer T stored in TFIB, and removed
 upon reception of the corresponding Ack.
 
-```
-E.TFIB = E.TFIB U (F -> T)
-```
+    E.TFIB = E.TFIB U (F -> T)
+
 
 ### IU/IN transmission at network routers
 
 At the reception of IU/IN packets, each router performs a name-based Longest
-Prefix Match lookup in FIB to compare sequence number from IU/IN and from FIB}.
+Prefix Match lookup in FIB to compare sequence number from IU/IN and from FIB.
 According to that comparison:
 
 - if the IU/IN packet carries a higher sequence number, the existing
@@ -638,7 +626,7 @@ According to that comparison:
   forward further the IU (INs are not propagated) and temporarily copied
   into TFIB to avoid loss of such information before completion of the
   IU/IN acknowledgement process (in case of IN, such entries in TFIB are
-  set with a $\bot$ timer to maintain a trace of the producer recent
+  set with a Null timer to maintain a trace of the producer recent
   attachment). Also, the originating face of the IU/IN is added to FIB
   to route consumer requests to the latest known location of the
   producer.
@@ -750,8 +738,8 @@ original forwarding tree and thus global connectivity.
 All mobility management protocols share the same critical need for securing
 their control messages which have a direct impact on the forwarding of users'
 traffic. {{SEC}} reviews standard approaches from the literature
-and proposes a fast, lightweight and distributed approach based on hash
-chaining that can be applied to MAP-Me and fits its design principles.
+and proposes a fast, lightweight and decentralized approach based on hash
+chains that can be applied to MAP-Me and fits its design principles.
 
 # Acknowledgements
 
