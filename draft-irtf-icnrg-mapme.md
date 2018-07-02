@@ -539,9 +539,9 @@ performance of flows in progress, especially when latency-sensitive.
 The full MAP-Me approach consists in the combination of Updates and
 Notifications through a heuristic allowing the producer or its PoA to select
 which type of packet to send. One such heuristic consist in sending a IN
-immediately adter an attachment and a IU at most every Tu seconds, which allows
+immediately after an attachment and a IU at most every Tu seconds, which allows
 to reduce signaling overhead during periods of high-mobility. The Tu parameter
-allows to tune the timescale at which Updates occur, and lead to a tradeoff
+allows to tune the timescale at which Updates occur, and lead to a trade-off
 between signaling and discovery overheads {{MAPME}}. The definition of
 heuristics is out of scope for the present draft.
 
@@ -613,21 +613,19 @@ To ensure reliable delivery of IUs, a timer is setup in the temporary section of
 the FIB entry (TFIB). If an acknowledgement of the IU/IN reception is not
 received within t seconds since the packet transmission, IU is retransmitted.
 
-We define the
+We define the following function for sending Special Interests of a given type
+on faces F based on FIB entry E.
 
 ```
 SendReliably(F, type, E)
 ```
 
-function fpr sending Special Interests of a given type on faces F based
-on FIB entry E. It schedules their retransmission through a timer T
-stored in TFIB:
+It schedules their retransmission through a timer T stored in TFIB, and removed
+upon reception of the corresponding Ack.
 
 ```
 E.TFIB = E.TFIB U (F -> T)
 ```
-
-and removed on Ack.
 
 ### IU/IN transmission at network routers
 
@@ -729,7 +727,7 @@ the producer left and the face got destroyed), it enters a discovery phase where
 the Interest is flagged as a Discovery Interest and with the local sequence
 number, then broadcasted to neighboring PoAs.
 
-Upon reception of a Discovery Interest, the PoA forwards it direcly to the
+Upon reception of a Discovery Interest, the PoA forwards it directly to the
 producer if still attached, otherwise it repeats the one-hop brodcast discovery
 to neighboring PoAs if it stores a recent notification of the producer presence,
 i.e. an entry in TFIB having higher sequence number than the one in the
