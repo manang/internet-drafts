@@ -184,6 +184,20 @@ locators and extend the ICN forwarding mechanisms with mobility support.
   producer mobility. Addressing macro-mobility is a non-goal of the proposal. We
   are focusing here on complementary mechanisms able to provide a fast and
   lightweight handover, preserving the performance of flows in progress.
+  
+  - __Control Plane Agnostic__ : MAP-Me _is control-plane agnostic as does 
+  not rely on routing updates or path computation_, which
+  would be too slow and too costly, but rather works at a faster timescale
+  propagating forwarding updates on a single path and leveraging real-time
+  notifications left as breadcrumbs by the producer, to enable live tracking of
+  its content prefixes and avoid buffering at intermediate nodes. MAP-Me
+  shares the use of data plane mechanisms for ensuring connectivity with
+  {{DATAPLANE}} which was originally proposed for link failures. This enables
+  the support of high-speed mobility and real-time group applications. In
+  addition, MAP-Me mobility updates are issued at prefix granularity, rather
+  than content or chunk/packet granularity, to minimize signaling overhead and
+  temporary state kept by in-network nodes, and scale to large and dynamic
+  mobile networks.
 
 - __Access-agnostic__ : MAP-Me handles mobility at Layer 3 and is designed to be
   access-agnostic, to cope with highly heterogeneous wireless access and
@@ -203,18 +217,7 @@ locators and extend the ICN forwarding mechanisms with mobility support.
   producer to be aware of the mobility of the remote endpoint, nor producers to
   perform handover prediction.
 
-- __Reactive and lightweight__ : MAP-Me _does not rely on routing updates_, which
-  would be too slow and too costly, but rather works at a faster timescale
-  propagating forwarding updates on a single path and leveraging real-time
-  notifications left as breadcrumbs by the producer to enable live tracking of
-  its content prefixesn and avoid bufferring at intermediate nodes. MAP-Me
-  shares the use of data plane mechanisms for ensuring connectivity with
-  {{DATAPLANE}} which was originally proposed for link failures. This enables
-  the support of high-speed mobility and real-time group applications. In
-  addition, MAP-Me mobility updates are issued at prefix granularity, rather
-  than content or chunk/packet granularity, to minimize signaling overhead and
-  temporary state kept by in-network nodes, and scale to large and dynamic
-  mobile networks.
+
 
 - __Robust__ : to network conditions (e.g. routing failure, wireless or
   congestion losses, and delays), by leveraging hop-by-hop retransmissions of
