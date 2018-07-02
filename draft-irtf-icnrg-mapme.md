@@ -478,12 +478,12 @@ affecting user flow performance, as show in {{MAPME}} evaluations.
 # Notification protocol and Scope discovery {#sec-mapme-in}
 
 IU propagation in the data plane accelerates forwarding state re-convergence
-w.r.t. global routing (GR) or resolution-based (RB) approaches operating at
-control plane, and w.r.t. anchor-based (AB) approaches requiring traffic
-tunneling through the anchor. Still, network latency makes IU completion not
-instantaneous and before an update completes, it may happen that a portion of
-the traffic is forwarded to the previous PoA and dropped because of the absence
-of a valid output face leading to the producer.
+w.r.t. routing or resolution-based approaches operating at control plane, and
+w.r.t. anchor-based approaches requiring traffic tunneling through an anchor.
+Still, network latency makes IU completion not instantaneous and before an
+update completes, it may happen that a portion of the traffic is forwarded to
+the previous PoA and dropped because of the absence of a valid output face
+leading to the producer.
 
 Previous work in the Anchor-Less category has suggested the buffering of
 Interests at previous producer location to prevent such losses by increasing
