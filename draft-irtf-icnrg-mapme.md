@@ -650,33 +650,33 @@ The operations in the forwarding pipeline for IU/IN processing are reported in
 {{alg-update}}.
 
 ~~~~~~~~~~
-   | Algorithm 1:ForwardSpecialInterest(SpecialInterest SI, IngressFace F)
-   |
-   |  CheckValidity()
-   |  // Retrieve the FIB entry associated to the prefix
-   |  e, T <- FIB.LongestPrefixMatch(SI.name)
-   |  if SI.seq >= e.seq then
-   |  .   // Acknowledge reception
-   |  .   s <- e.seq
-   |  .   e.seq <- SI.seq
-   |  .   SendReliably(F, SI.type + Ack, e)
-   |  .   //Process special interest
-   |  .   if F in e.TFIB then
-   |  .   .   // Remove outdated TFIB entry (eventually cancelling timer)
-   |  .   .   e.TFIB = e.TFIB \ F
-   |  .   if SI.seq > s then
-   |  .   .   if SI.type == IU then
-   |  .   .   .   // Forward the IU following the FIB entry
-   |  .   .   .   SendReliably(e.NextHops, SI.type, e
-   |  .   .   else
-   |  .   .   .   // Create breadcrumb and preserve forwarding structure
-   |  .   .   .   e.TFIB = e.TFIB U {(f -> NULL): for all f in e.NextHops}
-   |  .   .   e.NextHops = {}
-   |  .   e.NextHops = e.NextHops U { F }
-   |  else
-   |  .   // Send updated IU backwards
-   |  .   SI.seq = e.seq
-   |  .   SendReliably(F, SI.type, e)
+  | Algorithm 1:ForwardSpecialInterest(SpecialInterest SI, IngressFace F)
+  |
+  |  CheckValidity()
+  |  // Retrieve the FIB entry associated to the prefix
+  |  e, T <- FIB.LongestPrefixMatch(SI.name)
+  |  if SI.seq >= e.seq then
+  |  .   // Acknowledge reception
+  |  .   s <- e.seq
+  |  .   e.seq <- SI.seq
+  |  .   SendReliably(F, SI.type + Ack, e)
+  |  .   //Process special interest
+  |  .   if F in e.TFIB then
+  |  .   .   // Remove outdated TFIB entry (eventually cancelling timer)
+  |  .   .   e.TFIB = e.TFIB \ F
+  |  .   if SI.seq > s then
+  |  .   .   if SI.type == IU then
+  |  .   .   .   // Forward the IU following the FIB entry
+  |  .   .   .   SendReliably(e.NextHops, SI.type, e
+  |  .   .   else
+  |  .   .   .   // Create breadcrumb and preserve forwarding structure
+  |  .   .   .   e.TFIB = e.TFIB U {(f -> NULL): for all f in e.NextHops}
+  |  .   .   e.NextHops = {}
+  |  .   e.NextHops = e.NextHops U { F }
+  |  else
+  |  .   // Send updated IU backwards
+  |  .   SI.seq = e.seq
+  |  .   SendReliably(F, SI.type, e)
 ~~~~~~~~~~
 {: #alg-update}
 
@@ -688,28 +688,28 @@ The function SendToNeighbors(I) is responsible for broadcasting the Interest I
 to all neighboring PoAs.
 
 ~~~~~~~~~~
-   | Algorithm 2:  InterestForward(Interest I, Origin face F)
-   |
-   |  // Regular PIT and CS lookup
-   |  e <- FIB.LongestPrefixMatch(I.name)
-   |  if e = 0 then
-   |  .   return
-   |  if I.seq = 0 then
-   |  .   // Regular interest
-   |  .   if hasValidFace(e.NextHops) or DiscoveryDisabled then
-   |  .   .   ForwardingStrategy.process(I, e)
-   |  .   else
-   |  .   .   // Enter discovery mode
-   |  .   .   I.seq <- e.seq
-   |  .   .   SendToNeighbors(I)
-   |  else
-   |  .   // Discovery interest: forward if producer is connnected
-   |  .   if hasProducerFace(e.NextHops) then
-   |  .   .   ForwardingStrategy.process(I, e)
-   |  .   // Otherwise iterate iif higher seq and breadcrumb
-   |  .   else if e.seq >= I.seq and EXISTS f | (f -> NULL) in e.TFIB then
-   |  .   .   I.seq <- e.seq
-   |  .   .   SendToNeighbors(I)
+  | Algorithm 2:  InterestForward(Interest I, Origin face F)
+  |
+  |  // Regular PIT and CS lookup
+  |  e <- FIB.LongestPrefixMatch(I.name)
+  |  if e = 0 then
+  |  .   return
+  |  if I.seq = 0 then
+  |  .   // Regular interest
+  |  .   if hasValidFace(e.NextHops) or DiscoveryDisabled then
+  |  .   .   ForwardingStrategy.process(I, e)
+  |  .   else
+  |  .   .   // Enter discovery mode
+  |  .   .   I.seq <- e.seq
+  |  .   .   SendToNeighbors(I)
+  |  else
+  |  .   // Discovery interest: forward if producer is connnected
+  |  .   if hasProducerFace(e.NextHops) then
+  |  .   .   ForwardingStrategy.process(I, e)
+  |  .   // Otherwise iterate iif higher seq and breadcrumb
+  |  .   else if e.seq >= I.seq and EXISTS f | (f -> NULL) in e.TFIB then
+  |  .   .   I.seq <- e.seq
+  |  .   .   SendToNeighbors(I)
 ~~~~~~~~~~
 {: #alg-forward}
 
