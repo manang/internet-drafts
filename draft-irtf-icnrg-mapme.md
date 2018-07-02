@@ -237,12 +237,12 @@ for managing network failures {{NLSR}}.
 
 MAP-Me is composed of:
 
-- an Update protocol {{sec-mapme-iu}}, which is the
+- an Update protocol, detailed in {{sec-mapme-iu}}, which is the
   central component of our proposal;
 
-- a Notification/Discovery protocol {{sec-mapme-in}}, to be coupled with the
-  Update protocol to enhance reactivity in mobility management for
-  realtime/latency-sensitive application, and lower overhead during fast
+- a Notification/Discovery protocol, presented in {{sec-mapme-in}}, to be
+  coupled with the Update protocol to enhance reactivity in mobility management
+  for realtime/latency-sensitive application, and lower overhead during fast
   mobility events.
 
 # Update protocol {#sec-mapme-iu}
