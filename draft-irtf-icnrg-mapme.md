@@ -650,7 +650,7 @@ The operations in the forwarding pipeline for IU/IN processing are reported in
 {{alg-update}}.
 
 ~~~~~~~~~~
-   | Algorithm 1 : ForwardSpecialInterest(SpecialInterest SI, Ingress face F)
+   | Algorithm 1:ForwardSpecialInterest(SpecialInterest SI, IngressFace F)
    |
    |  CheckValidity()
    |  // Retrieve the FIB entry associated to the prefix
@@ -670,7 +670,7 @@ The operations in the forwarding pipeline for IU/IN processing are reported in
    |  .   .   .   SendReliably(e.NextHops, SI.type, e
    |  .   .   else
    |  .   .   .   // Create breadcrumb and preserve forwarding structure
-   |  .   .   .   e.TFIB = e.TFIB U {( f -> NULL) : for all f in e.NextHops}
+   |  .   .   .   e.TFIB = e.TFIB U {(f -> NULL): for all f in e.NextHops}
    |  .   .   e.NextHops = {}
    |  .   e.NextHops = e.NextHops U { F }
    |  else
