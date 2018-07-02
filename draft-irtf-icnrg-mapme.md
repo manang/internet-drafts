@@ -237,13 +237,13 @@ for managing network failures {{NLSR}}.
 
 MAP-Me is composed of:
 
-- an Update protocol (MAP-ME-IU) ({{sec-mapme-iu}}), which is the
+- an Update protocol {{sec-mapme-iu}}, which is the
   central component of our proposal;
 
-- a Notification/Discovery protocol ({{sec-mapme-in}}), to be coupled
-  with the Update protocol (the full approach is referred to as MAP-Me) to
-  enhance reactivity in mobility management for realtime/latency-sensitive
-  application.
+- a Notification/Discovery protocol {{sec-mapme-in}}, to be coupled with the
+  Update protocol to enhance reactivity in mobility management for
+  realtime/latency-sensitive application, and lower overhead during fast
+  mobility events.
 
 # Update protocol {#sec-mapme-iu}
 
@@ -268,9 +268,10 @@ to point to the latest known location of the producer.
 
 ## Update propagation
 
-MAP-ME-IU aims at quickly restoring global reachability of mobile prefixes with
-low signaling overhead, while introducing a bounded maximum path stretch (i.e.
-ratio between the selected and the shortest path in terms of hops).
+The role of the update process is to quickly restore global reachability of
+mobile prefixes with low signaling overhead, while introducing a bounded maximum
+path stretch (i.e. ratio between the selected and the shortest path in terms of
+hops).
 
 Let us illustrate its behavior through an example where a single producer
 serving prefix /p moves from position P0 to P1 and so on. {{fig-proposal-iu-1}}
@@ -388,7 +389,7 @@ process in terms of bounded length and stretch are studied in {{MAPME}}.
 ## Concurrent updates
 
 Frequent mobility of the producer may lead to the propagation of concurrent
-updates. To prevent inconsistencies in FIB updates, MAP-Me-IU maintains a
+updates. To prevent inconsistencies in FIB updates, MAP-Me maintains a
 sequence number at the producer end that increases at each handover and
 identifies every IU packet. Network routers also keep track of such sequence
 number in FIB to verify IU freshness. Without detailing the specific operations
@@ -468,12 +469,11 @@ of IU(1) and sends back along its path a new IU with an updated sequence number
 ({{fig-proposal-iu-5}} (a)). The update proceeds until ultimately the
 whole network has converged towards P2 ({{fig-proposal-iu-5}} (b)).
 
-MAP-Me-IU  protocol reacts at a faster timescale than routing -- allowing more
+MAP-Me protocol reacts at a faster timescale than routing -- allowing more
 frequent and numerous mobility events -- and over a localized portion of the
-network edge between current and previous producer locations. We thus expect
-MAP-Me-IU respectively to minimize disconnectivity time and to reduce the link
-load, which are the main factors affecting user flow performance, as show in
-{{MAPME}} evaluations.
+network edge between current and previous producer locations. This allows to
+minimize disconnectivity time and reduce link load, which are the main factors
+affecting user flow performance, as show in {{MAPME}} evaluations.
 
 # Notification protocol and Scope discovery {#sec-mapme-in}
 
@@ -491,8 +491,8 @@ network reactivity. However, such a solution is not suitable for applications
 with stringent latency requirements (e.g. real-time) and may be incompatible
 with IU completion times. Moreover, the negative effects on latency performance
 might be further exacerbated by IU losses and consequent retransmissions in case
-of wireless medium. To alleviate such issues, we introduce two
-enhancements to MAP-Me-IU protocol, namely (i) an "Interest Notification"
+of wireless medium. To alleviate such issues, we introduce two enhancements to
+the previously described behavior, namely (i) an "Interest Notification"
 mechanism for frequent, yet lightweight, signaling of producer movements to the
 network and (ii) a scoped "Producer Discovery" mechanism for consumer requests
 to proactively search for the producer's recently visited locations.
