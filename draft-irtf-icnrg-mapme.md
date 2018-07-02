@@ -1,7 +1,7 @@
 ---
 title: "MAP-Me : Managing Anchorless Mobility in Content Centric Networking"
 abbrev: Managing Anchorless Mobility in CCN
-docname: draft-irtf-icnrg-mapme
+docname: draft-irtf-icnrg-mapme-00
 date: 2018-03
 category: info
 
@@ -662,7 +662,7 @@ The operations in the forwarding pipeline for IU/IN processing are reported in
   |  .   SendReliably(F, SI.type + Ack, e)
   |  .   //Process special interest
   |  .   if F in e.TFIB then
-  |  .   .   // Remove outdated TFIB entry (eventually cancelling timer)
+  |  .   . // Remove outdated TFIB entry (eventually cancelling timer)
   |  .   .   e.TFIB = e.TFIB \ F
   |  .   if SI.seq > s then
   |  .   .   if SI.type == IU then
@@ -670,7 +670,7 @@ The operations in the forwarding pipeline for IU/IN processing are reported in
   |  .   .   .   SendReliably(e.NextHops, SI.type, e
   |  .   .   else
   |  .   .   .   // Create breadcrumb and preserve forwarding structure
-  |  .   .   .   e.TFIB = e.TFIB U {(f -> NULL): for all f in e.NextHops}
+  |  .   .   .   e.TFIB = e.TFIB U {(f -> NULL):for all f in e.NextHops}
   |  .   .   e.NextHops = {}
   |  .   e.NextHops = e.NextHops U { F }
   |  else
@@ -707,7 +707,7 @@ to all neighboring PoAs.
   |  .   if hasProducerFace(e.NextHops) then
   |  .   .   ForwardingStrategy.process(I, e)
   |  .   // Otherwise iterate iif higher seq and breadcrumb
-  |  .   else if e.seq >= I.seq and EXISTS f | (f -> NULL) in e.TFIB then
+  |  .   else if e.seq >= I.seq and EXISTS f |(f -> NULL) in e.TFIB then
   |  .   .   I.seq <- e.seq
   |  .   .   SendToNeighbors(I)
 ~~~~~~~~~~
