@@ -1,11 +1,10 @@
 image: python:latest
 
-build:
-  - pip install xml2rfc
-
 job 1:
   stage: build
-  script: make;
+  script: 
+    - pip install xml2rfc
+    - make
 
 pages:
   stage: deploy
