@@ -2,21 +2,14 @@ image: martinthomson/i-d-template
 
 stages:
   - build
-  - deploy
 
 rfc:
   stage: build
   script: 
     - make
-    
-pages:
-  stage: deploy
-  script:
     - mkdir .public
     - cp -r *.txt *.html .public
     - mv .public public
   artifacts:
     paths:
       - public
-  only:
-    - master
