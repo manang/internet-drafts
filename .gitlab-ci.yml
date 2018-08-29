@@ -1,9 +1,10 @@
-image: python:latest
+image: beevelop/nodejs-python-ruby
 
 job 1:
   stage: build
   script: 
     - pip install xml2rfc
+    - gem install kramdown-rfc2629
     - make
 
 pages:
