@@ -1,0 +1,14 @@
+image: martinthomson/i-d-template
+
+stages:
+  - build
+
+idraft:
+  stage: build
+  script: 
+    - make
+    - mkdir public
+    - cp *.txt *.html public
+  artifacts:
+    paths:
+      - public
