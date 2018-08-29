@@ -1,14 +1,14 @@
-image: beevelop/nodejs-python-ruby
+image: martinthomson/i-d-template
 
-build:
+stages:
+  - build
+  - deploy
+
+rfc:
   stage: build
   script: 
-    - pip install xml2rfc wget  
-    - gem install kramdown-rfc2629
-    - python -c 'import wget; wget.download("https://github.com/martinthomson/i-d-template/archive/master.tar.gz", out="master.tar.gz")'
-    - mkdir lib; tar xvzf master.tar.gz -C lib --strip-components=1
     - make
-
+    
 pages:
   stage: deploy
   script:
