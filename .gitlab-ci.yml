@@ -1,12 +1,11 @@
+image: paulej/rfctools:latest
+
 stages:
   - build
   - deploy
 
-before_script:
-
 job 1:
   stage: build
-  script: apt-get install python-pip texlive-latex-base; pip install xml2rfc; 
   script: make; make pdf; make
 
 pages:
