@@ -1,12 +1,11 @@
-image: paulej/rfctools:latest
+image: python:latest
 
-stages:
-  - build
-  - deploy
+build:
+  - pip install xml2rfc
 
 job 1:
   stage: build
-  script: make; make pdf; make
+  script: make;
 
 pages:
   stage: deploy
