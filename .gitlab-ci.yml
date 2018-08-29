@@ -3,13 +3,12 @@ image: martinthomson/i-d-template
 stages:
   - build
 
-rfc:
+idraft:
   stage: build
   script: 
-    - make
-    - mkdir .public
-    - cp -r *.txt *.html .public
-    - mv .public public
+    - make pdf
+    - mkdir public
+    - cp *.txt *.html *.pdf  public
   artifacts:
     paths:
       - public
