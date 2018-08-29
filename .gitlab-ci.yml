@@ -6,9 +6,9 @@ stages:
 idraft:
   stage: build
   script: 
-    - make pdf
+    - make
     - mkdir public
-    - cp *.txt *.html *.pdf  public
+    - cp *.txt *.html public
   artifacts:
     paths:
       - public
