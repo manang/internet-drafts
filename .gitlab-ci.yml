@@ -1,0 +1,21 @@
+stages:
+  - build
+  - deploy
+
+before_script:
+
+job 1:
+  stage: build
+  script: make; make pdf; make
+
+pages:
+  stage: deploy
+  script:
+    - mkdir .public
+    - cp -r * .public
+    - mv .public public
+  artifacts:
+    paths:
+      - public
+  only:
+    - master
