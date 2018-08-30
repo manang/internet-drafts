@@ -16,7 +16,7 @@ internet drafts:
   only:
     - master
     
-web page:
+pages:
   stage: deploy
   script: 
     - mkdir public
