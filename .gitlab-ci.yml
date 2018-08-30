@@ -17,7 +17,7 @@ web page:
   stage: deploy
   script: 
     - mkdir public
-    - cp -f *.txt *.html public
+    - cp -f *.txt *.html *.css  public
   artifacts:
     paths:
       - public
