@@ -2,8 +2,9 @@ image: martinthomson/i-d-template
 
 stages:
   - build
+  - deploy
 
-idraft:
+internet drafts:
   stage: build
   script: 
     - make
@@ -12,3 +13,13 @@ idraft:
   artifacts:
     paths:
       - public
+web page:
+  stage: deploy
+  script: 
+    - mkdir public
+    - cp -f *.txt *.html public
+  artifacts:
+    paths:
+      - public
+  only:
+    - gh-pages
