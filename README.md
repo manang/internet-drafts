@@ -3,4 +3,4 @@ IETF drafts on Hybrid Information-Centric Networking.
 
 # Working drafts
 
-https://muscariello.gitlab.io/drafts
+https://icn-team.gitlab.io/internet-drafts
