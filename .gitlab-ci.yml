@@ -13,7 +13,9 @@ internet drafts:
   artifacts:
     paths:
       - public
-      
+  only:
+    - master
+    
 web page:
   stage: deploy
   script: 
