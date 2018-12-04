@@ -242,7 +242,7 @@ requires data to cross a communication network by using a transport protocol.
 The way consumers and producers synchronize depends on application requirements
 and the transport layer exposes a variety of services: stream/datagram,
 reliable/unreliable, with or without latency budgets etc. Independently of the
-specif requirements of the applications, producer sockets always perform data
+specific requirements of the applications, producer sockets always perform data
 segmentation from the upper layer into Data Packets, as well as compute 
 digital signatures on the packet security envelop. This envelop can
 also be computed across a group of packets, by including a cryptographic hash of
@@ -614,7 +614,7 @@ integrity, data-origin authenticity and confidentiality are tied to
 the content rather than to the channel.  
 Integrity and data-origin authenticity are provided
 through a digital signature computed by the producer and included in
-each data packet. Integrity and data-origin authenticity qre provided in two ways
+each data packet. Integrity and data-origin authenticity are provided in two ways
 using two approaches: the first one based on IP Authenticated Header
 {{RFC4302}} and the second one based on transport manifests.
 Notice that the IP AH is not used as an IPv6 extension header as it is appended
@@ -663,7 +663,7 @@ network devices such as middleboxes.
 
     KeyID:             256-bit key identifier.
 
-    Signature:         Variable length field that carries the cryotographic
+    Signature:         Variable length field that carries the cryptographic
                        signature of the security envelope.
                        It is 128 bytes for RSA-1024, 256 bytes for RSA-2048,
                        56 bytes for EDCSA 192, 72 bytes for ECDSA 256.
@@ -743,7 +743,7 @@ The end-host continues to identify interfaces using IPv6 addresses (locators or
 routing locators, RLOCs, using LISP terminology), just like any IPv6 router.
 In addition to that, transport end-points bind to location-independent names,
 similar to LISP end-point identifiers (EIDs). However, instead of using name prefixes to
-identify end-hosts only, in hICN a name prefix is used to identfity a data source.
+identify end-hosts only, in hICN a name prefix is used to identifity a data source.
 
 There is an analogy between IPv6 multicast and the hICN data forwarding path for
 one-to-many communications, as the IPv6 multicast group address identifies data that group members
