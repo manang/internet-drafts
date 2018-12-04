@@ -59,6 +59,7 @@ informative:
     WLD: DOI.10.1145/2984356.2984361
     MIR: DOI.10.1109/TMC.2017.2734658
     RAQ: DOI.10.1109/ICNP.2013.6733576
+    FRA: DOI.10.1109/MASS.2015.51
     TRA: 
        title: "M. Sardara, L. Muscariello and A. Compagno, A Transport Layer and Socket API for (h)ICN: Design, Implementation and Performance Analysis, In Proc. of ACM SIGCOMM ICN"
        date: "2018"
