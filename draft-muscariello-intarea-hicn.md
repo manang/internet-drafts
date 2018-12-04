@@ -59,6 +59,10 @@ informative:
     WLD: DOI.10.1145/2984356.2984361
     MIR: DOI.10.1109/TMC.2017.2734658
     RAQ: DOI.10.1109/ICNP.2013.6733576
+    TRA: 
+       title: "M. Sardara, L. Muscariello and A. Compagno, A Transport Layer and Socket API for (h)ICN: Design, Implementation and Performance Analysis, In Proc. of ACM SIGCOMM ICN"
+       date: "2018"
+       DOI: DOI  10.1145/3267955.3267972
 
 
 --- abstract
@@ -255,6 +259,8 @@ operations. It is out of scope for this document how to design and implement a
 scalable system to perform such certificate operations.
 
 A detailed description of transport end-points is out of scope for this document.
+A detailed description of transport end-points is out of scope for this document
+but more details can be found in {{TRA}}.
 
 ## Naming
 In hICN, two name components are defined: the name prefix and the name suffix.
@@ -297,7 +303,8 @@ name encoded in an IPv6 address.
 The name suffix is used by the transport layer protocol to index segments.
 The segment MUST be indexed in the end-points and in the network with the same
 suffix. This implies that there is one transport segment per IP packet and that
-IP fragmentation is not allowed.
+IP fragmentation is not allowed. Extension to allow secure fragmentation are
+possible, such as {{FRA}} but they are out of scope for this document.
 It is up to the producer end-point to determine how to perform segmentation
 depending on the use case. An MTU path discovery protocol for hICN is out of 
 scope of this document and additional work is required to extend existing protocols
@@ -727,6 +734,31 @@ any of the existing proposals.
                       security envelop.  
      
 
+# The End-host model and End-to-End considerations
+In hICN the end-host model is very similar to a regular IPv6 end-host with some extensions.
+An end-host is capable of opening consumer and producer transport end-points, one
+to receive data and one to send data under a given name prefix.
+The end-host continues to identify interfaces using IPv6 addresses (locators or
+routing locators, RLOCs, using LISP terminology), just like any IPv6 router.
+In addition to that, transport end-points bind to location-independent names,
+similar to LISP end-point identifiers (EIDs). However, instead of using name prefixes to
+identify end-hosts only, in hICN a name prefix is used to identfity a data source.
+
+There is an analogy between IPv6 multicast and the hICN data forwarding path for
+one-to-many communications, as the IPv6 multicast group address identifies data that group members
+receive from a single sender. Notice that in hICN a data packet transmission stores the
+identifiers in the source address field while in IPv6 multicast it is stored in the
+destination address field.
+
+Theres is also an analogy between IPv6 anycast and the hICN interest forwarding path,
+where multiple interfaces make use of the same
+IPv6 (anycast) address. Multiple instances of the same applications can then run at
+different end-points to eventually reply to the same request.
+
+An hICN network node behaves as an end-host consumer end-point for the upstream producer end-point
+as all replies are forced to flow back to the same hICN that transmitted the requests.
+An hICN network node may be able to reply to a request on behalf of a end-point producer,
+in that case that hICN node behaves as an end-host for the consumer end-point.
 
 # IANA Considerations
 There are no IANA considerations in this specification.
