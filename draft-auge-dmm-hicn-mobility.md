@@ -31,13 +31,13 @@ author:
     name: Luca Muscariello
     org: Cisco Systems Inc.
     email: lumuscar@cisco.com
--	
+-
     ins: M. Papalini
     name: Michele Papalini
     org: Cisco Systems Inc.
     email: micpapal@cisco.com
-    
-  
+
+
 informative:
   MAPME: DOI.10.1109/TNSM.2018.2796720
   SURVEY1: DOI.10.1109/INFCOMW.2016.7562050
@@ -45,6 +45,34 @@ informative:
   SURVEYICN: DOI.10.1145/2248361.2248363
   SURVEYCC: DOI.10.1016/j.comcom.2016.04.017
   KITE: DOI.10.1145/2660129.2660159
+  DATAPLANE:
+    title: "Ensuring connectivity via data plane mechanisms."
+    author:
+      -
+        surname: "Liu"
+        fullname: "Junda Liu"
+        ins: "J."
+      -
+        surname: "Panda"
+        fullname: "Aurojit Panda"
+        ins: "A."
+      -
+        surname: "Singla"
+        fullname: "Ankit Singla"
+        ins: "A."
+      -
+        surname: "Godfrey"
+        fullname: "Brighten Godfrey"
+        ins: "B."
+      -
+        surname: "Schapira"
+        fullname: "Michael Schapira"
+        ins: "M."
+      -
+        surname: "Shenker"
+        fullname: "Scott Shenker"
+        ins: "S."
+    date: 2013
   SEC: DOI.10.1145/3125719.3125725
   ravindran20175g: DOI.10.1109/MCOM.2017.1600938
   TS23.501:
@@ -64,46 +92,61 @@ informative:
 
 --- abstract
 
-This document presents how mobility management is handled in Hybrid-ICN {{?I-D.muscariello-intarea-hicn}}.
-The objective of the document is to present how end-points mobility is managed in two main cases:
-the end-point sends data (data producer ) or the end-point receive data (data consumer).
-These two cases are taken into account entirely to provide anchorless mobility management in hICN.
+This document first dicusses the use of locators and identifiers in mobility
+management architectures, and their implication on various anchorless
+properties. A new architecture is then proposed that is purely based on
+identifiers, and more specifically names as defined in Hybrid-ICN {{?I-D.muscariello-intarea-hicn}}.
+The document then focuses on two main cases: the end-point sends data (data
+producer) or the end-point receive data (data consumer). These two cases are
+taken into account entirely to provide anchorless mobility management in hICN.
 
---- middle	
-
+--- middle
 
 # Introduction
-Mobility has become a basic feature of network communications. Fueled by rapid advances in
-mobile technology and by the increasing digitization of network edge, mobile traffic has driven
-overall Internet traffic growth in the last years and such trend is expected to continue.
 
-However, mobility was not considered in the original IP network design. Current
-solutions provide mobility support by means of overlays added on top of the
-network as an afterthought. Notable examples are IETF Mobile IP and its variants
-{{!RFC3344}} and {{!RFC3775}} 3GPP GTP-based architecture {{TS29.274}}, both
-based on tunnelling and encapsulation.
+New usages of the network and the rapid growth of the Mobile Internet calls to
+reconsider the way we deploy and operate IP networks, where mobility is not
+built into the design, but rather added as an afterthought. Notable examples are
+IETF Mobile IP and its variants {{!RFC3344}} and {{!RFC3775}} 3GPP GTP-based
+architecture {{TS29.274}}, both based on tunnelling and encapsulation.
 
-With the deployments of novel applications such as mobile video, AR/VR or vehicular
-networking, mobile networks are more challenged than ever, and the currently
-centralized architectures show limitations in terms of performance and
-scalability. 
-
-One identified difficulty in proposing mobility models in IP lies in the
+One identified difficulty in proposing mobility models for IP lies in the
 semantic overloading of IP addresses which are both host identifiers, and
 locators used for routing. Starting with LISP, the identifier/locator split
 paradigm has shown promising results in virtue of its scalability properties with respect
 to routing tables entries, and the possibilities it offers in terms of mobility.
-Several solutions have been proposed around this concept, namely ILNP, ILSR, and ILA.
+Several solutions have been proposed around this concept, namely ILNP, ILSR, and
+ILA. One common facet of these proposals is to embrace the current trend of a
+clear separation between the control and data planes, which both allows for
+distribution of the control infrastructure, as well as anchorless operations in
+the data plane, including facilitated local breakout.
 
-The document proposes a mobility approach based on Hybrid ICN
-as described in {{?I-D.muscariello-intarea-hicn}} and analyzes more in-depth 
-mobility considerations in hICN, comparatively with state-of-the-art solutions, and  how the
-hICN may allow for the expected performance from future networks, paving
-the way for innovation  and new applications, while keeping the simplicity and
-end-to-end design of the current Internet. 
+The counterpart of these architectures is an increased dependency on the control
+plane which is responsible for binding the identifiers used by the application
+at the edge to the locators used to forward the traffic in the network. Device
+mobility will typically induce a change of IP address, which makes performance
+of flows in progress dependent on interactions with those control elements which
+have to remain globally consistent.
 
+In this document, we first propose to clarify protocol descriptions by adopting
+a new terminology of control-plane and data-plane anchors to characterize
+anchorless operations, and show their tight coupling with the use of locators
+and identifiers. This definition serves to position Loc/ID-split architectures
+with respect to the traditional use of tunnels, before advocating to push this
+step further and perform mobility management purely based on identifiers. We
+introduce a mobility approach based on Hybrid ICN as described in
+{{?I-D.muscariello-intarea-hicn}}, for which we perform an in-depth analysis of
+mobility considerations. We show how this proposal can help addressing further
+challenges faced by networks today, such as multihoming and multipath, while
+preserving the simplicity and end-to-end design of the current Internet.
 
-## Anchors and anchorless mobility
+# Locators, identifiers and anchorless mobility management
+
+## Terminology
+
+The consideration of mobility in network design shares the challenges raised for
+routing for instance in {{!RFC6115}}, where the terminology for locators and
+identifiers is presented.
 
 Because they are intrinsically bound to the topological location of a node,
 session established through locators require additional mechanisms to support
@@ -122,9 +165,8 @@ performance. We follow the classic distinction between control plane and user
 (or data, or forwarding) plane to distinguish control-plane anchors and
 user-plane anchors.
 
-
 User-plane anchor
-: A user-plane anchor is a node through which traffic is forced to pass. 
+: A user-plane anchor is a node through which traffic is forced to pass.
 An example of such anchor is the indirection point in Mobile IP.
 
 Control-plane anchor
@@ -137,11 +179,14 @@ affect the performance of the user-plane due to resolution delays or indirection
 
 Anchorless
 : This term qualifies approaches that do not involve any user-plane not
-control-plane anchor.
+control-plane anchor. The challenge for such full anchorless approaches are
+exacerbated during mobilty of both end points at the same time, as they cannot
+rely on any stable anchor point to preserve connectivity. Nor they can rely on
+routing mechanism that would be the source of overhead and instability.
 
-# Towards locator-independent network architectures
+## Towards locator-independent network architectures
 
-We distinguish network architectures based on their use of location independent 
+We distinguish network architectures based on their use of location independent
 identifiers (or names) and locators for forwarding.
 
 __Locator-based architectures__
@@ -163,9 +208,9 @@ addresses as locators or identifiers by explicitly defining two namespaces,
 respectively used for endpoint identification and forwarding. A mapping service
 is further used to bind an identifiers to a given location, and updated after
 mobility. From there, several approaches have been defined, either host-based
-like SHIM6 {{!RFC5533}} or HIP {{!RFC4423}}), or network-based, like LISP {{!RFC6830}}, 
+like SHIM6 {{!RFC5533}} or HIP {{!RFC4423}}), or network-based, like LISP {{!RFC6830}},
 ILSR, ILNP {{!RFC6740}} or ILA {{?I-D.herbert-intarea-ila}} to cite a few.
-	
+
 An overview of these approaches and their use in mobility is presented in
 {?I-D.bogineni-dmm-optimized-mobile-user-plane}}.
 
@@ -190,7 +235,7 @@ of approaches that we refer to as purely ID-based, also known as name-based
 often departs from this principle.
 
 
-# Information-Centric Networking (ICN)
+## Information-Centric Networking (ICN)
 
 ICN is a new networking paradigm centering network communication around
 named data, rather that host location. Network operations are driven by
@@ -219,27 +264,33 @@ in forwarding plane;
 5. fallback capability to tradition IP network/transport layer.
 
 hICN architecture is described in {{?I-D.muscariello-intarea-hicn}}.
-Together with MAP-Me {{?I-D.irtf-icnrg-mapme}}, it forms the basis for the mobility management
-architecture we describe in the rest of this document.
 
-## Consumer and producer mobility
+# Hybrid-ICN Anchorless Mobility Management (hICN-AMM)
 
-__Consumer mobility__
+hICN, together with MAP-Me {{?I-D.irtf-icnrg-mapme}}, forms the basis for the mobility management
+architecture we describe in the rest of this document. Due to the pull based
+nature of hICN architecture, we distinguish consumer and producer nodes, for
+which mobility is handled differently
+
+## Consumer mobility in hICN
+
 The consumer end-point is the logical communication termination that receives data.
 Due to the pull-based and connection-less properties of hICN
 communications, consumer mobility comes natively with ICN. It is indeed
 sufficient that the consumer reissues pending interests from the new
 point-of-attachment to continue the communication. Consumer mobility is
-anchorless by design. As will be discussed below, it is however necessary to
-have appropriate transport layer on top able to cope with the disruptions and
-path variations due to the mobility, at an eventual fine granularity.
+anchorless by design, and managed without any impact on the transport session.
+It is however necessary to have an appropriate transport layer on top able to
+cope with eventual disruptions and path variations caused by the mobility event.
 
-__Producer mobility__
+# Producer mobility architectures
+
 The producer end-point is the logical communication termination that sends data.
 Producer mobility is not natively supported by the architecture, rather handled
-in different ways according to the selected producer mobility management scheme.,
+in different ways according to the selected producer mobility management scheme,
 some of which diverge from the concept of pure ID-based architecture through
-their use of locators.
+their use of locators. Additional procedures have to be performed to maintain
+reachability as it moves in the network.
 
 In fact, many schemes proposed for ICN are adaptations to the vast amount of
 work made in IP over the last two decades {{!RFC6301}}. Surveys for the ICN
@@ -265,13 +316,7 @@ enabled without tunneling.
 - _Anchorless_ approaches allow the mobile nodes to advertise their mobility to
 the network without requiring any specific node to act as a rendez-vous point.
 
-# Hybrid-ICN Anchorless Mobility Management (hICN-AMM)
-The consumer end-point does not require mobility management. So any time an
-end-host fetches data from a data source, mobility is managed by hICN 
-without any impact the transport session.
-
-Producer mobility is not natively supported by hICN, and additional procedures
-have to be performed to maintain reachability as it moves in the network.
+## Producer mobility in hICN
 
 In an hICN network, regular routing protocols such as BGP, ISIS or OSPF can be
 used for propagating all prefix announcements and populate routers' FIBs.
@@ -287,14 +332,20 @@ simplicity, we refer to it as simply MAP-Me in the rest of the document.
 
 In the rest of this section, we describe the specific realization of the
 protocol in an hICN context. Additional background and details are available in
-{{?I-D.irtf-icnrg-mapme}} and {{MAPME}}.
+{{?I-D.irtf-icnrg-mapme}} and {{MAPME}}. The solution is based on a path repair
+mechanism following mobility events, using dynamic FIB updates. Using data plane
+mechanisms for ensuring connectivity has been previously proposed in
+{{DATAPLANE}} to handle link failures, and has been proven more reactive than
+relying on typical control plane messaging.
+
+# Protocol description
 
 ## Signalization messages; acknowledgements and retransmission
 
 Signalization messages follow hICN design principles and use data plane packets
 for signalization. Signalization messages and acknowledgement are respectively
 Interest and Data packet (requests and replies) according to hICN terminology
-{{?I-D.muscariello-intarea-hicn}}. 
+{{?I-D.muscariello-intarea-hicn}}.
 Upon processing of those advertisements, the network will send an
 acknowledgement back to the producer using the name prefix as the source and
 the locator of the producer as the destination, plus the sequence number
@@ -574,7 +625,7 @@ The next section will discuss more in depth the following advantages
 
 As emerges from the points raised in the previous section, consumer mobility is
 transparently supported by an hICN network in virtue of the pull-based model and the
-way the forwarding path works. 
+way the forwarding path works.
 After moving, a consumer can just reissue pending interests once attached to the
 new access router at layer 2, without requiring any more information from L3 and
 above. This ensures a fast and simple handover, which can be further enhanced
@@ -915,16 +966,7 @@ compute capacity in the mobile core. A direct consequence is also a more robust
 and reliable network.
 
 
-# Discussion
-
-## Scope
-
-Both consumer and producer mobility support multiple paths, however the support
-of mobility for a multihomed producer, is left for future updates of the present
-document.
-
-Similarly, the proposed producer mobility solution is appropriate for the
-management of micro-mobility; its extension to multiple domains is out of scope.
+# Implementation considerations
 
 ## Interaction with non-hICN enabled routers
 
@@ -951,7 +993,6 @@ context. A proper security scheme is certainly the right way to address this
 problem, and we believe the set of benefits that we have listed are worth
 reconsidering such aspects.
 
-
 ## Security considerations {#sec-security}
 
 As indicated in previous sections, signalization messages transmitted across
@@ -965,6 +1006,15 @@ headers {{!RFC4302}}, or SEND {{!RFC3971}} (and its proxy extensions {{!RFC6496}
 Alternatively, {{SEC}} has reviewed standard approaches from the
 literature and proposes a fast, lightweight and distributed approach that
 can be applied to MAP-Me and fits its design principles.
+
+## Discussion
+
+Both consumer and producer mobility support multiple paths, however the support
+of mobility for a multihomed producer, is left for future updates of the present
+document.
+
+Similarly, the proposed producer mobility solution is appropriate for the
+management of micro-mobility; its extension to multiple domains is out of scope.
 
 
 # IANA Considerations {#iana}
