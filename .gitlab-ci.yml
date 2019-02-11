@@ -19,10 +19,9 @@ internet drafts:
 pages:
   stage: deploy
   script: 
-    - mkdir public
-    - cp -f *.txt *.html *.css  public
+    - cp -f *.html *.css  public
   artifacts:
     paths:
       - public
   only:
-    - gh-pages
+    - master
