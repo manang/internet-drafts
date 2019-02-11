@@ -17,9 +17,12 @@ internet drafts:
     - master
     
 pages:
+  image: alpine:latest
   stage: deploy
   script: 
     - cp -f page/*.html page/*.css  public
+  dependencies:
+    - internet drafts
   artifacts:
     paths:
       - public
