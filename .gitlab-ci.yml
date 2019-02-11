@@ -19,7 +19,7 @@ internet drafts:
 pages:
   stage: deploy
   script: 
-    - cp -f *.html *.css  public
+    - cp -f page/*.html page/*.css  public
   artifacts:
     paths:
       - public
