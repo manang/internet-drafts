@@ -20,7 +20,7 @@ pages:
   image: alpine:latest
   stage: deploy
   script: 
-    - cp -f page/*.html page/*.css  public
+    - cp -f index.html  public
   dependencies:
     - internet drafts
   artifacts:
