@@ -95,10 +95,15 @@ meaning as defined in {{RFC2119}}.
 # Transport framework architecture
 
 ## Application APIs
+Application requirements to tailor underlying transport
 ## Consumer and Producer Sockets
+Packet semantics
 ## Flow identification
+...
 ## Rate and congestion control loop
+...
 ## Loss detection and control 
+...
 
 # Coexistance with non-ICN transport
 
