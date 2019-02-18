@@ -1,7 +1,7 @@
 ---
 title: Applicability of the Hybrid Information-Centric Networking Architecture
-abbrev: hICN
-docname: draft-muscariello-hicn-applicability-00
+abbrev: hICN Applicability
+docname: draft-muscariello-hicn-applicability-latest
 date:
 category: info
 
@@ -30,6 +30,7 @@ normative:
     RFC0793:
     RFC1081:
     RFC1624:
+    RFC2119:
     RFC3031:
     RFC3587:
     RFC3550:
@@ -50,15 +51,18 @@ informative:
     MIR: DOI.10.1109/TMC.2017.2734658
     RAQ: DOI.10.1109/ICNP.2013.6733576
 
-
 --- abstract
 
    This document discusses the applicability of the Hybrid Information-Centric Networking (hICN)
    architecture by showing examples of the development of applications on top of hICN transport 
    and the deployment of hICN routers in the IPv6 Internet.
    Among the many
-   
 --- middle
 
 # Introduction
 
+## Notational Conventions
+
+The words "MUST", "MUST NOT", "SHOULD", and "MAY" are used in this document.
+It's not shouting; when these words are capitalized, they have a special
+meaning as defined in {{RFC2119}}.

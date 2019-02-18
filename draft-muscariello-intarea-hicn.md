@@ -116,6 +116,12 @@ is computed by the producer (using its own private key) and must be verified by 
 The security envelop can be as small as a single data packet or 
 cover groups of packets using the technique of the transport manifest {{MAN}}.
 
+## Notational Conventions
+
+The words "MUST", "MUST NOT", "SHOULD", and "MAY" are used in this document.
+It's not shouting; when these words are capitalized, they have a special
+meaning as defined in {{RFC2119}}.
+
 # Architecture
 ~~~
 +---------------------+
