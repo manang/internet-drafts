@@ -8,6 +8,7 @@ internet drafts:
   stage: build
   script: 
     - make
+    - make pdf
     - mkdir public
     - cp *.txt *.html public
   artifacts:
