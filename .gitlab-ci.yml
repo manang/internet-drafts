@@ -1,6 +1,7 @@
 image: martinthomson/i-d-template
+
 before_script:
-  - apt-get install -y enscript ps2pdf
+  - sudo apt-get install -y enscript ps2pdf
 stages:
   - build
   - deploy
