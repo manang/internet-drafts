@@ -55,8 +55,10 @@ informative:
 
 ICN/hICN architectures introduce a location-independent communication model based on request/reply exchanges between a client and one or more a-priori unknown sources (ref to RFCs). Requests carry a data indentifier which is not bound to any specific
 host location, hence unaffected by network mobility. They are dynamically routed in a hop-by-hop fashion over one or multiple paths until they are matched by the requested data. Data packets follow the reverse path of requests to be conveyed to one or more requesting clients. 
-Mobility, Multi-path, Multi-source and Many-to-many communication characterize ICN/hICN transport making it 
-Clearly, the traditional host-to-host transport protocols is not directly applicable.
+
+Mobility, Multi-path, Multi-source and Many-to-many communication characterize ICN/hICN transport making it a promising candidate for a various number of applications (e.g. live-streaming, IoT, mobile edge computing, realtime multimedia communications, etc.)
+Clearly, the traditional host-to-host transport protocols is not directly applicable as it requires the knowledge of both client and server end-points and does not involve dynamic forwarding / caching / control decisions taken by in-path nodes.
+
 Many attempts to define ICN transport protocols for targeted applications (refs to papers)
 A few attemtps to redefine flow in ICN context, but no unified ICN transport framework so far.
 Without the ambition to design a specific ICN transport protocol, we specify in this document a M4 transport framework suitable for ICN/hICN architectures and illustrate its applicability over relevant use cases.
@@ -65,8 +67,50 @@ Without the ambition to design a specific ICN transport protocol, we specify in 
 
 # Introduction
 
+## Problem and Scope
+ICN communication model: a summary
+
+
+
+
+
+## Related work
+Rel work : a summary
+
+## Reference ICN architecture: hICN
+
+We focus on hICN (refs) and on the open-sourced implementation in FD.io hICN project (ref)
+
+Two sentences of recap
+
+## Terminology
+
 ## Notational Conventions
 
 The words "MUST", "MUST NOT", "SHOULD", and "MAY" are used in this document.
 It's not shouting; when these words are capitalized, they have a special
 meaning as defined in {{RFC2119}}.
+
+
+# Transport framework architecture
+
+## Application APIs
+## Consumer and Producer Sockets
+## Flow identification
+## Rate and congestion control loop
+## Loss detection and control 
+
+# Coexistance with non-ICN transport
+
+# Examples of application
+## Live-streaming video distribution
+## Realtime Communications
+
+# Security considerations
+## Consumer
+## Producer
+
+
+
+
+
