@@ -1,7 +1,7 @@
 ---
-title: Applicability of the Hybrid Information-Centric Networking Architecture
-abbrev: hICN Applicability
-docname: draft-muscariello-hicn-applicability-latest
+title: Transport Framework for Hybrid Information-Centric Networking Architecture
+abbrev: hICN-transport
+docname: draft-muscariello-hicn-transport-latest
 date:
 category: info
 
@@ -52,6 +52,14 @@ informative:
     RAQ: DOI.10.1109/ICNP.2013.6733576
 
 --- abstract
+
+ICN architectures introduce a location-independent communication model based on request/reply exchanges between a client and a-priori unknown source(s) (ref to RFCs). Requests carry an indentifier which is not bound to any specific
+source and are dynamically routed in a hop-by-hop fashion over one or multiple  
+Many attempts to define ICN transport protocols for targeted applications (refs to papers)
+A few attemtps to redefine flow in ICN context, but
+No unified ICN transport framework 
+Without defining a single transprot protocol we specify here a M4 transport framework suitable for ICN/hICN architectures
+and illustrate its applicability over relevant use cases.
 
    This document discusses 
 --- middle
