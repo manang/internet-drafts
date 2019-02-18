@@ -53,15 +53,14 @@ informative:
 
 --- abstract
 
-ICN architectures introduce a location-independent communication model based on request/reply exchanges between a client and a-priori unknown source(s) (ref to RFCs). Requests carry an indentifier which is not bound to any specific
-source and are dynamically routed in a hop-by-hop fashion over one or multiple  
+ICN/hICN architectures introduce a location-independent communication model based on request/reply exchanges between a client and one or more a-priori unknown sources (ref to RFCs). Requests carry a data indentifier which is not bound to any specific
+host location, hence unaffected by network mobility. They are dynamically routed in a hop-by-hop fashion over one or multiple paths until they are matched by the requested data. Data packets follow the reverse path of requests to be conveyed to one or more requesting clients. 
+Mobility, Multi-path, Multi-source and Many-to-many communication characterize ICN/hICN transport making it 
+Clearly, the traditional host-to-host transport protocols is not directly applicable.
 Many attempts to define ICN transport protocols for targeted applications (refs to papers)
-A few attemtps to redefine flow in ICN context, but
-No unified ICN transport framework 
-Without defining a single transprot protocol we specify here a M4 transport framework suitable for ICN/hICN architectures
-and illustrate its applicability over relevant use cases.
+A few attemtps to redefine flow in ICN context, but no unified ICN transport framework so far.
+Without the ambition to design a specific ICN transport protocol, we specify in this document a M4 transport framework suitable for ICN/hICN architectures and illustrate its applicability over relevant use cases.
 
-   This document discusses 
 --- middle
 
 # Introduction
