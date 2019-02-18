@@ -8,7 +8,7 @@ internet drafts:
   stage: build
   script: 
     - make
-    - apt-get install -y enscript ps2pdf
+    - sudo apt-get install -y enscript ps2pdf
     - make pdf
     - mkdir public
     - cp *.txt *.html public
