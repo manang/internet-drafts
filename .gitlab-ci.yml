@@ -1,13 +1,15 @@
-image: martinthomson/i-d-template
+image: icnteam/internet-drafts:latest
 
 stages:
   - build
+  - build_doc
   - deploy
 
 internet drafts:
   stage: build
   script: 
     - make
+    - make pdf
     - mkdir public
     - cp *.txt *.html public
   artifacts:
@@ -15,7 +17,12 @@ internet drafts:
       - public
   only:
     - master
-    
+
+pdf:
+  image:  
+  stage: build_doc
+  scri
+
 pages:
   image: alpine:latest
   stage: deploy
