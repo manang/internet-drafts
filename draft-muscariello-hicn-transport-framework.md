@@ -53,15 +53,14 @@ informative:
 
 --- abstract
 
-ICN/hICN architectures introduce a location-independent communication model based on request/reply exchanges between a client and one or more a-priori unknown sources (ref to RFCs). Requests carry a data indentifier which is not bound to any specific
-host location, hence unaffected by network mobility. They are dynamically routed in a hop-by-hop fashion over one or multiple paths until they are matched by the requested data. Data packets follow the reverse path of requests to be conveyed to one or more requesting clients. 
+Information-Centric Networking (ICN) architectures introduce a location-independent communication model based on request/reply exchanges between a client and one or more a-priori unknown sources (ref to RFCs). Request packets carry a data indentifier which is not bound to any specific host location, hence is not affected by network mobility. They are routed in a hop-by-hop fashion over one or multiple paths until they are matched by requested data packets. Data packets follow the reverse path of requests to be conveyed to one or more requesting clients. 
 
-Mobility, Multi-path, Multi-source and Many-to-many communication characterize ICN/hICN transport making it a promising candidate for a various number of applications (e.g. live-streaming, IoT, mobile edge computing, realtime multimedia communications, etc.)
-Clearly, the traditional host-to-host transport protocols is not directly applicable as it requires the knowledge of both client and server end-points and does not involve dynamic forwarding / caching / control decisions taken by in-path nodes.
+Mobility, Multi-path, Multi-source and Many-to-many communication (M4) characterize ICN transport making it a promising candidate for a various number of applications (e.g. live-streaming, IoT, mobile edge computing, realtime multimedia communications, etc.)
+The requirements of native M4 transport are not met by traditional host-to-host transport protocols which assume the knowledge of both client and server end-points before packet transmission and do not leverage dynamic forwarding/caching/control decisions taken by in-path nodes.
 
-Many attempts to define ICN transport protocols for targeted applications (refs to papers)
-A few attemtps to redefine flow in ICN context, but no unified ICN transport framework so far.
-Without the ambition to design a specific ICN transport protocol, we specify in this document a M4 transport framework suitable for ICN/hICN architectures and illustrate its applicability over relevant use cases.
+There have been various attempts in the literature to either adapt existing transport protocols to ICN or to define novel approaches, in all cases targeting a specific application (refs to papers)
+A few attemtps have been made at addressing the novel challenges brought by ICN in terms of flow definition, path labelling, etc., but to the best of our knowledge no unified ICN transport framework has been proposed so far.
+Without the ambition to design a specific ICN transport protocol, this document discusses a general M4 transport framework for Hybrid ICN, an IP-integrated open-source ICN architecture (ref to FD.io hICN) and  illustrates its applicability to a few relevant use cases.
 
 --- middle
 
