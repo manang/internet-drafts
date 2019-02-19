@@ -213,7 +213,41 @@ and has the advantage to enable multicast upload from one client to many servers
 ## Application APIs
 Application requirements to tailor underlying transport
 ## Consumer and Producer Sockets
-Packet semantics
+We use substantially unaltered the INET6 socket API for \hicn{} with the twofold 
+advantage to provide a known API for developers of new applications and simple 
+integration of existing ones.
+The system calls of \hicn{} socket API are based on the socket interface extensions 
+for IPv6 \cite{rfc3493}. Both consumer and producer sockets bind to a socket address 
+(\sa{}), which is initialized by specifying address family 
+\af  and name prefix. The range of addresses stated by the name prefix 
+tells the namespace in which a producer socket is allowed to publish data and a 
+consumer socket is allowed to request data.
+
+The \texttt{bind()} system call takes care of setting up a local face to the \hicn{} 
+forwarder, which in the case of the producer also sets a FIB entry 
+\texttt{(name\_prefix, socket\_id)}. The \texttt{recvmsg()} and the \texttt{recvfrom()} 
+system calls are used by a consumer for retrieving data, while \texttt{sendmsg()} and 
+\texttt{sendto()} are used by a producer for publishing a content and making it available 
+for the consumers. 
+After data is published under a given name,  subsequent requests for it can be 
+satisfied by the producer socket without passing them to the application.
+
+The consumer socket can use the \texttt{sendmsg()} for sending a single Interest 
+with payload eventually triggering a \texttt{recvmsg()} on the remote producer 
+to pass the payload to the application, e.g. to send and HTTP request in half RTT.
+In general, push semantics are realized using reverse pull techniques, which require all end-points
+to have a consumer and a producer socket open and bound to a valid name prefix.
+An end-point can push data to one or several remote end-points by (i) calling a 
+\texttt{sendto()} from the producer socket with actual data; (ii) passing the resulting 
+transport manifest to a valid open consumer socket; (iii) calling a \texttt{sendmsg()} 
+from the consumer to trigger an Interest packet carrying the data manifest as payload.
+The remote producer (one or many) after reception of Interest can pass the manifest to
+the local consumer socket to trigger the reverse pull procedure.
+This technique can be used to send large HTTP requests to one or multiple servers, 
+and has the advantage to enable multicast upload from one client to many servers.
+
+- Transport semantics in L4 packet header 
+
 ## Flow identification
 ...
 ## Rate and congestion control at the receiver
