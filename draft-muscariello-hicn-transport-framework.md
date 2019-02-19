@@ -81,6 +81,15 @@ directly on secured named data regardless of their location.
 It results a native support for mobility, storage and security as network features are integrated
 by design, rather than as an afterthought.
 
+- Rephrase around M4 transprot capabilities
+
+- Focus here is on defining a transport frameworkf for Hybrid ICN (REF to FD.io hICN)
+Hybrid ICN is an architecture that brings ICN into IPv6 as described in [1]. By doing that, hicn allows to generalize IPv6 networking by using location-independent name-based networking. This is made either at the network layer and at the transport layer by also providing name-based sockets to applications.
+
+hicn allows to reuse existing IPv6 protocol and architectures, to extend them and deploy hybrid solutions based on the use case and application needs. Moreover, hicn can exploit hardware and software implementations heavily based on IP, making much simpler insertion of the technology in current networks, current applications and design future applications reusing what the industry already provides in terms of on the shelf components. 
+
+
+
 
 
 
@@ -105,6 +114,65 @@ meaning as defined in {{RFC2119}}.
 
 # Transport framework architecture
 
+M4 Transport framework provides segmentation and reassembly services to
+the applications, and sits on top of hICN network layer which provides a 
+request/reply service to the transport layer itself. End-points in TCP/IP can be 
+described as acting as transmitters or receivers, or both at the same time, 
+whereas hICN transport is oriented to the consumer/producer paradigm where a 
+transmission is always triggered by a matching request. Moreover, a TCP connection 
+is a bidirectional communication channel, while in hICN there are always two 
+unidirectional sockets: the consumer and the producer. Transport protocols in 
+hICN can be stream or datagram oriented, depending on the application (as TCP or UDP).
+Currently, hICN prototype implements (i) the stream oriented ICN multi-path 
+transport protocol with support for loss recovery, flow and congestion control 
+introduced  in \cite{carofiglio2016optimal} and (ii) the in-network loss control 
+mechanisms in \cite{Papalini-WLDR}. We plan to enrich in the future the set of 
+supported transport protocols. As previously mentioned, a transport manifest is used 
+by the producer to distribute meta-data useful for consumer to retrieve the actual 
+data. It includes low level segmentation information (name suffixes) as well as 
+integrity information, and it is signed with the producer's private key~\cite{Manifest}. 
+Such approach is adopted as the default \hicn{} approach instead of per packet 
+signature computation. The manifest also carries the expiration time of the associated data
+which is an absolute quantity and requires reasonable synchronization to UTC.
+In case the manifest is not used by the producer, the expiration time is carried
+by the TCP timestamp option.
+
+
+\subsection{Socket API}\label{subsec:socket-api}
+We use substantially unaltered the INET6 socket API for \hicn{} with the twofold 
+advantage to provide a known API for developers of new applications and simple 
+integration of existing ones.
+The system calls of \hicn{} socket API are based on the socket interface extensions 
+for IPv6 \cite{rfc3493}. Both consumer and producer sockets bind to a socket address 
+(\sa{}), which is initialized by specifying address family 
+\af  and name prefix. The range of addresses stated by the name prefix 
+tells the namespace in which a producer socket is allowed to publish data and a 
+consumer socket is allowed to request data.
+
+The \texttt{bind()} system call takes care of setting up a local face to the \hicn{} 
+forwarder, which in the case of the producer also sets a FIB entry 
+\texttt{(name\_prefix, socket\_id)}. The \texttt{recvmsg()} and the \texttt{recvfrom()} 
+system calls are used by a consumer for retrieving data, while \texttt{sendmsg()} and 
+\texttt{sendto()} are used by a producer for publishing a content and making it available 
+for the consumers. 
+After data is published under a given name,  subsequent requests for it can be 
+satisfied by the producer socket without passing them to the application.
+
+The consumer socket can use the \texttt{sendmsg()} for sending a single Interest 
+with payload eventually triggering a \texttt{recvmsg()} on the remote producer 
+to pass the payload to the application, e.g. to send and HTTP request in half RTT.
+In general, push semantics are realized using reverse pull techniques, which require all end-points
+to have a consumer and a producer socket open and bound to a valid name prefix.
+An end-point can push data to one or several remote end-points by (i) calling a 
+\texttt{sendto()} from the producer socket with actual data; (ii) passing the resulting 
+transport manifest to a valid open consumer socket; (iii) calling a \texttt{sendmsg()} 
+from the consumer to trigger an Interest packet carrying the data manifest as payload.
+The remote producer (one or many) after reception of Interest can pass the manifest to
+the local consumer socket to trigger the reverse pull procedure.
+This technique can be used to send large HTTP requests to one or multiple servers, 
+and has the advantage to enable multicast upload from one client to many servers.
+
+
 ## Application APIs
 Application requirements to tailor underlying transport
 ## Consumer and Producer Sockets
@@ -123,6 +191,13 @@ Packet semantics
 ## Realtime Communications
 
 # Security considerations
+
+We also envision for future work, the design of a secure transport layer that 
+provides confidentiality to the communication by extending the widely diffused 
+point-to-point approach (e.g., as in TLS and DTLS), by means of secure group 
+communications~\cite{baugher2005multicast,perrig1999efficient,rafaeli2003survey,sherman2003key} 
+to cope and exploit \hicn{} in-network caching and multicasting.
+
 ## Consumer
 ## Producer
 
