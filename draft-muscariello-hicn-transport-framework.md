@@ -66,8 +66,20 @@ Without the ambition to design a specific ICN transport protocol, this document 
 
 # Introduction
 
+
 ## Problem and Scope
-ICN communication model: a summary
+
+Information-Centric Networking (ICN) identifies a networking paradigm  centering 
+communication around named data, in contrast to host location. ICN offers a simplified 
+and more efficient user-to-content communication that resolves the mismatch 
+between content-centric usage and underlying host-to-host foundations of the Internet.
+
+Despite important architectural differences in the proposed designs (REFS), a shared
+idea characterizes ICN, that of abstracting data delivery from underlying point
+to point connectivity by means of an information-aware network layer operating
+directly on secured named data regardless of their location. 
+It results a native support for mobility, storage and security as network features are integrated
+by design, rather than as an afterthought.
 
 
 
