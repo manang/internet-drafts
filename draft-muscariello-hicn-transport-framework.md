@@ -81,27 +81,54 @@ directly on secured named data regardless of their location.
 It results a native support for mobility, storage and security as network features are integrated
 by design, rather than as an afterthought.
 
-- Rephrase around M4 transprot capabilities
 
-- Focus here is on defining a transport frameworkf for Hybrid ICN (REF to FD.io hICN)
-Hybrid ICN is an architecture that brings ICN into IPv6 as described in [1]. By doing that, hicn allows to generalize IPv6 networking by using location-independent name-based networking. This is made either at the network layer and at the transport layer by also providing name-based sockets to applications.
+Receiver-Driven Connectionless Transport – In contrast
+with the current sender-based TCP/IP model, ICN transport
+is receiver-controlled, does not require connection instantiation
+and accommodates retrieval from possibly multiple
+dynamically discovered sources. It builds upon the flow
+balance principle guaranteeing corresponding request-data
+flows on a hop-by-hop basis [9]. A large body of work has
+looked into ICN transport (surveyed in [78]), not only to
+propose rate and congestion control mechanisms [81, 100] –
+especially in the multipath case [30] – but also to highlight
+the interaction with in-network caching [29], the coupling
+with request routing [30, 50], and the new opportunities
+provided by in-network hop-by-hop rate/loss/congestion
+control [32, 93] for a more reactive low latency response of
+involved network nodes.
 
-hicn allows to reuse existing IPv6 protocol and architectures, to extend them and deploy hybrid solutions based on the use case and application needs. Moreover, hicn can exploit hardware and software implementations heavily based on IP, making much simpler insertion of the technology in current networks, current applications and design future applications reusing what the industry already provides in terms of on the shelf components. 
 
-
-
+- Rephrase around M4 transport capabilities
 
 
 
 
 ## Related work
 Rel work : a summary
+There have been various attempts in the literature to either adapt existing transport protocols to ICN or to define novel approaches, in all cases targeting a specific application (refs to papers)
+
+
+Rel work on ICN transport protocols
+
+....
+
+A few attemtps have been made at addressing the novel challenges brought by ICN in terms of flow definition, path labelling, etc., but to the best of our knowledge no unified ICN transport framework has been proposed so far.
+
+Rel work on work redifining general transport aspects of ICN
+
+...
 
 ## Reference ICN architecture: hICN
 
+Focus here is on defining a transport frameworkf for Hybrid ICN (REF to FD.io hICN)
+
 We focus on hICN (refs) and on the open-sourced implementation in FD.io hICN project (ref)
 
-Two sentences of recap
+Hybrid ICN is an architecture that brings ICN into IPv6 as described in [1]. By doing that, hicn allows to generalize IPv6 networking by using location-independent name-based networking. This is made either at the network layer and at the transport layer by also providing name-based sockets to applications.
+
+hicn allows to reuse existing IPv6 protocol and architectures, to extend them and deploy hybrid solutions based on the use case and application needs. Moreover, hicn can exploit hardware and software implementations heavily based on IP, making much simpler insertion of the technology in current networks, current applications and design future applications reusing what the industry already provides in terms of on the shelf components. 
+
 
 ## Terminology
 
