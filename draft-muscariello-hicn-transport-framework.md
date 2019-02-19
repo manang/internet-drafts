@@ -111,13 +111,23 @@ There have been various attempts in the literature to either adapt existing tran
 
 Rel work on ICN transport protocols
 
-....
+
+There has been huge amount of work on transport protocolsin the Internet. Here we focus on transport schemes proposedfor CCN. We give a discussion of such work in three aspects.RTT-based congestion control:Some designs, for instanceICP [3] and ICTP [19], rely on a single round trip time (RTT)estimator at the receiver to predict network status which arenot suitable for CCN because CCN flows may have multiplesources and multiple paths. To adapt to CCN’s multipathnature, authors in [5], [6] propose per-route transport control,in which a separate RTT estimation is maintained for eachroute at the receiver, similar to MPTCP [21]. Multiple RTTbased scheme works well for multipath transfer, however, itadds lots of complexity to the receiver and heavily relies onthe accuracy of timing. Our scheme, on the other hand, utilizesexplicit congestion signalling from network to effectivelynotify the receiver about network condition. Compared withmultiple RTT based scheme, our approach leads to a muchsimpler receiver design and is not restricted to limitations oftimers which have long been criticized [9], [11], [18], [24].hop-by-hop  Interest  shaping:Since in CCN one Interestpacket retrieves at most one Data chunk, a router can controlthe rate of future incoming data chunks by shaping the rate ofoutgoing Interests. In [4], [17], authors propose quota-basedInterest shaping scheme to actively control traffic volume.They assign a quota (in terms of the number of pendingInterests) to each flow, and if the number of pending Interestsfor a flow exceeds the quota, that flow’s Interests will bedelayed or dropped. In [22], authors use per interface rate limitto avoid congestion at an interface and per prefix-interfaceratelimit to control Interest rate of each content prefix. The quota-based Interest shaping and the rate limiting Interest controlrequire to assign an appropriate quota value for each flowor rate limit value for each content, which is challenging inpractice, if not impossible. And they can be rather inefficientunder dynamic traffic setting. Our fair share Interest shapingscheme also considers about fairness, however, resources areshared by all flows and Interest from a flow is delayedtemporarily only when shared resources become limited andthe corresponding flow unfairly consumes resources.flow-aware traffic control:Authors in [17] propose a flow-aware network paradigm for CCN. They define content flowas packets bearing the same content name identified on the flyby parsing the packet headers. Moreover, routers impose per-flow fair bandwidth sharing by having multiple data queues ateach interface for active flows and using deficit round robin(DRR) [20] for fair scheduling among these queues. Differentfrom such scheme, our FISP realizes per-flow fair sharing byhaving per-flow Interest queues at an interface and utilizingmodified DRR to approximate max-min fairness.
+
+The Information Centric Transport Protocol (ICTP) [REF]adapts the existing ideas of CCNx. ICTP implements thesame algorithm of TCP in its congestion control mechanism,adapting it to the receiver-driven context. In particular, itoperates using interest-data sequences. The loss detection relieson the expected set of data. An equivalent of duplicate ACKin ICTP is the out-of-order received segments, i.e. a gap inthe flow of data. In NetInf TP the order of reception is non-sequential and loss detection relies on the number of receivedsegments after a particular request has been issued.Carofiglioet al.propose the Interest Control Protocol (ICP)as a receiver-driven transport protocol for CCN [REF]. ICPimplements a window-based interest flow control mechanism.For reliability, ICP relies on delay measurements and timerexpirations only; this means, retransmissions are realized byre-issuing interest packets once the timers expire. This alsomeans that re-expression of an interest can happen even if apacket is only delayed. The authors used an analytic modelwith parameter setting to optimize the round-trip timers. Incontrast, NetInf TP uses an additional packet loss detectionmechanism that signals congestion more reliably. 
+
+NetInf TP [REF] applies a cyclic retransmission strategy which savesresources in congested scenarios.
 
 A few attemtps have been made at addressing the novel challenges brought by ICN in terms of flow definition, path labelling, etc., but to the best of our knowledge no unified ICN transport framework has been proposed so far.
 
-Rel work on work redifining general transport aspects of ICN
+Rel work on new challenges  brought by  ICN transport 
 
-...
+- Flow definition
+- Path identification
+- Out-of-order delivery or variations in inter-arrival inter-vals can no longer be used as an indication of networkcongestion. In fact, a packet might arrive out of ordersimply because it has been sent by a node located furtheraway than the source of the other packets.
+- RTO estimation, as defined by Jacobson’s algorithm [6],does not span multiple data sources, and as such it cannotbe used reliably.
+
+
 
 ## Reference ICN architecture: hICN
 
