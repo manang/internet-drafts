@@ -36,24 +36,7 @@ author:
     org: Cisco Systems Inc.
     email: mpapal@cisco.com
 
-
-normative: 
-    RFC0793:
-    RFC1081:
-    RFC1624:
-    RFC2119:
-    RFC3031:
-    RFC3587:
-    RFC3550:
-    RFC4291:
-    RFC4302:
-    RFC6830:
-    RFC8200:
 informative:
-    I-D.irtf-icnrg-ccnxsemantics:
-    I-D.irtf-icnrg-ccnxmessages:
-    I-D.irtf-icnrg-mapme:
-    I-D.irtf-icnrg-terminology:
     CCN: DOI.10.1145/1658939.1658941
     NDN: DOI.10.1145/2656877.2656887
     MAN: DOI.10.1109/INFCOMW.2012.6193505
@@ -61,11 +44,7 @@ informative:
     MIR: DOI.10.1109/TMC.2017.2734658
     RAQ: DOI.10.1109/ICNP.2013.6733576
     FRA: DOI.10.1109/MASS.2015.51
-    TRA: 
-       title: "M. Sardara, L. Muscariello and A. Compagno, A Transport Layer and Socket API for (h)ICN: Design, Implementation and Performance Analysis, In Proc. of ACM SIGCOMM ICN"
-       date: "2018"
-       DOI: DOI  10.1145/3267955.3267972
-
+    TRA: DOI.10.1145/3267955.3267972
 
 --- abstract
 
@@ -88,8 +67,8 @@ in end-points and routers and in a way to guarantee transparent interconnection
 with IP without using overlays.
 	
 The ICN reference design used in this document is CCNx as  described in
-{{I-D.irtf-icnrg-ccnxsemantics}} and {{I-D.irtf-icnrg-ccnxmessages}}. 
-IPv6 is used as described in {{RFC8200}}.
+{{!I-D.irtf-icnrg-ccnxsemantics}} and {{!I-D.irtf-icnrg-ccnxmessages}}. 
+IPv6 is used as described in {{!RFC8200}}.
 
 There are some basic design principles behind the hICN architecture that are 
 implemented by the design reported below that can be summarized as follows:
@@ -101,7 +80,7 @@ content-distribution or real-time applications, to cite examples
 - (ii)  it provides connection-less
 and location independent communications by identifying data with unique
 global names, instead of naming network interfaces (locator) or end-hosts (end-host identifiers)
-as in LISP {{RFC6830}}.
+as in LISP {{!RFC6830}}.
 
 - (iii) data is retrieved 
 by an end-point by issuing requests and a
@@ -121,7 +100,7 @@ cover groups of packets using the technique of the transport manifest {{MAN}}.
 
 The words "MUST", "MUST NOT", "SHOULD", and "MAY" are used in this document.
 It's not shouting; when these words are capitalized, they have a special
-meaning as defined in {{RFC2119}}.
+meaning as defined in {{!RFC2119}}.
 
 # Architecture
 ~~~
@@ -278,7 +257,7 @@ This is incarnated by a listening socket that binds to the name prefix.
 The name suffix is used to index segmented data within the scope of the 
 name prefix  used by the application. 
 
-For instance an RTP {{RFC3550}} source with a given SSRC can be mapped 
+For instance an RTP {{!RFC3550}} source with a given SSRC can be mapped 
 into a name prefix.  Single RTP sequence numbers can be mapped into name suffixes.
 For example an HTTP server can listen to a name prefix to serve HTTP requests.
 An HTTP reply with large payload with require the transport layer to segment 
@@ -300,7 +279,7 @@ The format of an hICN name prefix is the following:
 ~~~
 {: #fig-name-prefix title="hICN IPv6 name prefix."}
 
-It is composed of a routable IPv6 /64 prefix as per {{RFC3587}} which
+It is composed of a routable IPv6 /64 prefix as per {{!RFC3587}} which
 SHOULD be globally routable. The data identifier is encoded in 64 bits.
 An application can use several identifiers if needed.
 
@@ -454,8 +433,31 @@ the same for both packet types while the network header is slightly different.
 
     Lifetime:          16-bit unsigned integer to carry the packet lifetime in
                        milliseconds.  
-                       
+
     Checksum:          Updated using RFC 1624.
+
+~~~
+
+0                   1                   2                   3
+ 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+|          Source Port          |       Destination Port        |
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+|             Length            |            Checksum           |
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+|                          Name Suffix                          |
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+|                           Path Label                          |
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+|  Data |   Time    |M|A|S|R|S|F|        Loss Detection         |
+| Offset|   Scale   |A|C|I|S|Y|I|         and Recovery          |
+|       |           |N|K|G|T|N|N|                               |
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+|           Checksum            |             Lifetime          |
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+~~~
+{: #fig-transport-udp title="Transport header for data and interest packets using UDP header."}
+Both transport headers can be used to carry name suffix information.
 
 
 The following sections describe the components of an hICN node 
@@ -485,7 +487,7 @@ just like any other IP packet, with the additional processing due to a cache loo
 to check if the actual reply is already present in the local cache for expedited
 reply.
 
-On the other hand,  data packet forwarding  is similar to label swapping {{RFC3031}}, being the packet 
+On the other hand, data packet forwarding is similar to label swapping {{!RFC3031}}, being the packet 
 name identifier (prefix plus suffix) the forwarding label. The next hop for the reply in transit
 is indeed selected by using information in a cached matching request.
 
@@ -555,7 +557,7 @@ Polymorphism is transparent for the forwarding plane while it has several implic
          +--------------+        | Duplicate |
 Interest |              |        +-----^-----+
  +-------> Data Miss    |              |
-         | Interet Hit+-------------->-+
+         | Interest Hit +-------------->-+
          |              |              |
          +--------------+              |
                                  +-----v-----+
@@ -623,7 +625,7 @@ Integrity and data-origin authenticity are provided
 through a digital signature computed by the producer and included in
 each data packet. Integrity and data-origin authenticity are provided in two ways
 using two approaches: the first one based on IP Authenticated Header
-{{RFC4302}} and the second one based on transport manifests.
+{{!RFC4302}} and the second one based on transport manifests.
 Notice that the IP AH is not used as an IPv6 extension header as it is appended
 after the transport header. However the choice of the IP AH has been made
 in order to exploit existing protocol implementations in the end-points.
@@ -658,6 +660,7 @@ network devices such as middleboxes.
 /                           Signature                           /
 /                                                               /
 +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+
 ~~~~
 {: #fig-ah title="The IP authentication header appended after the transport header to carry packet signatures."}
 
@@ -681,6 +684,8 @@ to  the consumer. hICN cryptographic hashes of data packets are then computed in
 of signatures. The hashes are computed on immutable fields as explained above when using the
 IP AH. Moreover, the manifest must be signed to guarantee a level of security 
 equivalent to packet-wise signatures.
+When the producer uses the manifest data packets do not carry the AH which is carried
+by the transport manifest only.
 
 hICN is oblivious of the trust model adopted by consumers and works with 
 any of the existing proposals. 
