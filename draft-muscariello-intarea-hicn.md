@@ -1,7 +1,7 @@
 ---
 title: Hybrid Information-Centric Networking
 abbrev: hICN
-docname: draft-muscariello-intarea-hicn-01
+docname: draft-muscariello-intarea-hicn-02
 date:
 category: info
 
