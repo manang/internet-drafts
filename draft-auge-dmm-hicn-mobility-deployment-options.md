@@ -1,7 +1,8 @@
 ---
 title: "Anchorless mobility management through hICN (hICN-AMM): Deployment options"
 abbrev: "hICN mobility: deployment options"
-docname: draft-auge-hicn-mobility-deployment-options
+docname: draft-auge-dmm-hicn-mobility-deployment-options-02
+
 date:
 category: info
 
@@ -21,22 +22,46 @@ author:
 -
     ins: J. Augé
     name: Jordan Augé
-    org: Cisco Systems Inc.
+    org: Cisco Systems
+    abbrev: Cisco
+    street:
+    - 11, rue Camille Desmoulins
+    city: Issy-les-Moulineaux
+    code: '92130'
+    country: France
     email: augjorda@cisco.com
 -
     ins: G. Carofiglio
     name: Giovanna Carofiglio
-    org: Cisco Systems Inc.
+    org: Cisco Systems
+    abbrev: Cisco
+    street:
+    - 11, rue Camille Desmoulins
+    city: Issy-les-Moulineaux
+    code: '92130'
+    country: France
     email: gcarofig@cisco.com
 -
     ins: L. Muscariello
     name: Luca Muscariello
-    org: Cisco Systems Inc.
+    org: Cisco Systems
+    abbrev: Cisco
+    street:
+    - 11, rue Camille Desmoulins
+    city: Issy-les-Moulineaux
+    code: '92130'
+    country: France
     email: lumuscar@cisco.com
 -
     ins: M. Papalini
     name: Michele Papalini
-    org: Cisco Systems Inc.
+    org: Cisco Systems
+    abbrev: Cisco
+    street:
+    - 11, rue Camille Desmoulins
+    city: Issy-les-Moulineaux
+    code: '92130'
+    country: France
     email: micpapal@cisco.com
 
 informative:

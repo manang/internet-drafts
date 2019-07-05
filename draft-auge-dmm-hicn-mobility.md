@@ -1,7 +1,7 @@
 ---
 title: "Anchorless mobility through hICN"
-docname: draft-auge-dmm-hicn-mobility
-date:
+docname: draft-auge-dmm-hicn-mobility-02
+date: 
 category: info
 
 ipr:
@@ -19,24 +19,47 @@ author:
 -
     ins: J. Augé
     name: Jordan Augé
-    org: Cisco Systems Inc.
+    org: Cisco Systems
+    abbrev: Cisco
+    street:
+    - 11, rue Camille Desmoulins
+    city: Issy-les-Moulineaux
+    code: '92130'
+    country: France
     email: augjorda@cisco.com
 -
     ins: G. Carofiglio
     name: Giovanna Carofiglio
-    org: Cisco Systems Inc.
+    org: Cisco Systems
+    abbrev: Cisco
+    street:
+    - 11, rue Camille Desmoulins
+    city: Issy-les-Moulineaux
+    code: '92130'
+    country: France
     email: gcarofig@cisco.com
 -
     ins: L. Muscariello
     name: Luca Muscariello
-    org: Cisco Systems Inc.
+    org: Cisco Systems
+    abbrev: Cisco
+    street:
+    - 11, rue Camille Desmoulins
+    city: Issy-les-Moulineaux
+    code: '92130'
+    country: France
     email: lumuscar@cisco.com
 -
     ins: M. Papalini
     name: Michele Papalini
-    org: Cisco Systems Inc.
+    org: Cisco Systems
+    abbrev: Cisco
+    street:
+    - 11, rue Camille Desmoulins
+    city: Issy-les-Moulineaux
+    code: '92130'
+    country: France
     email: micpapal@cisco.com
-
 
 informative:
   MAPME: DOI.10.1109/TNSM.2018.2796720
@@ -97,7 +120,7 @@ management architectures, and their implication on various anchorless
 properties. A new architecture is then proposed that is purely based on
 identifiers, and more specifically names as defined in Hybrid-ICN {{?I-D.muscariello-intarea-hicn}}.
 The document then focuses on two main cases: the end-point sends data (data
-producer) or the end-point receive data (data consumer). These two cases are
+producer) or the end-point receives data (data consumer). These two cases are
 taken into account entirely to provide anchorless mobility management in hICN.
 
 --- middle
