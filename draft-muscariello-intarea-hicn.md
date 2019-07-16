@@ -48,7 +48,7 @@ informative:
 
 --- abstract
 
-This documents describes the hybrid information-centric networking (hICN) architecture
+This document describes the hybrid information-centric networking (hICN) architecture
 for IPv6. The specifications describe a way to implement information-networking functionalities
 into IPv6. The objective is to use IPv6 without creating overlays with a new packet
 format as an additional encapsulation. The intent of the present design is 
@@ -67,17 +67,17 @@ in end-points and routers and in a way to guarantee transparent interconnection
 with IP without using overlays.
 	
 The ICN reference design used in this document is CCNx as  described in
-{{!I-D.irtf-icnrg-ccnxsemantics}} and {{!I-D.irtf-icnrg-ccnxmessages}}. 
+{{!RFC8569}} and {{!RFC8609}}. 
 IPv6 is used as described in {{!RFC8200}}.
 
 There are some basic design principles behind the hICN architecture that are 
 implemented by the design reported below that can be summarized as follows:
 
-- (i)  the network can transport many different kinds of applications as IPv6, i.e. hICN can serve
+- (i) the network can transport many different kinds of applications as IPv6, i.e. hICN can serve
 content-distribution or real-time applications, to cite examples
  with very different requirements. hICN is not a content-distribution network;
 
-- (ii)  it provides connection-less
+- (ii) it provides connection-less
 and location independent communications by identifying data with unique
 global names, instead of naming network interfaces (locator) or end-hosts (end-host identifiers)
 as in LISP {{!RFC6830}}.
@@ -170,7 +170,7 @@ The hICN network architecture can run on top of any link-layer that supports IPv
 hICN data names are globally routable names which are visible
 to the transport layer end-points. Conversely, the transport layer has no visibility of addresses of 
 network interfaces.
-The network layer forwards two kind of protocol data units: the request and the
+The network layer forwards two kinds of protocol data units: the request and the
 reply, called interest and data packets.
 
 The hICN network layer offers a communication service to the transport layer 
@@ -178,7 +178,7 @@ in the end-points by means of a local unidirectional channel that we call local
 or application face. This channel is used by the transport layer to send requests and receive
 replies or to send replies upon receptions of requests.
 
-A transport end-point is always bound to a  unidirectional channel that is used to
+A transport end-point is always bound to a unidirectional channel that is used to
 either send data or receive data. The former end-point is called
 data producer while the latter data consumer. The producer end-point
 produces data under a location independent name, which is an 
@@ -712,7 +712,7 @@ any of the existing proposals.
 +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
                                . . . 
 +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-|                           Name-suffixv[NumberOfEntries]       |
+|                           Name-suffix[NumberOfEntries]        |
 +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 |                           Hash Value [NumberOfEntries]        |
 |                                                               |
@@ -755,7 +755,7 @@ The end-host continues to identify interfaces using IPv6 addresses (locators or
 routing locators, RLOCs, using LISP terminology), just like any IPv6 router.
 In addition to that, transport end-points bind to location-independent names,
 similar to LISP end-point identifiers (EIDs). However, instead of using name prefixes to
-identify end-hosts only, in hICN a name prefix is used to identifity a data source.
+identify end-hosts only, in hICN a name prefix is used to identify a data source.
 
 There is an analogy between IPv6 multicast and the hICN data forwarding path for
 one-to-many communications, as the IPv6 multicast group address identifies data that group members
@@ -777,5 +777,6 @@ in that case that hICN node behaves as an end-host for the consumer end-point.
 There are no IANA considerations in this specification.
 
 # Acknowledgements 
-The authors would like to thank David Ward, David Oran, Paul Polakos, Mark Townsley, Mauro Sardara and Alberto Compagno
+The authors would like to thank David Ward, David Oran, Paul Polakos, Mark Townsley, 
+Mauro Sardara and Alberto Compagno
 for suggestions on how to improve the architecture and the current document.
