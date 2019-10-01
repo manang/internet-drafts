@@ -374,12 +374,12 @@ the same for both packet types while the network header is slightly different.
 |                                                               |
 +                                                               +
 |                                                               |
-+                          Source Address                       +
++                     Destination Address                       +
 |                                                               |
 +                                                               +
 |                                                               |
 +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-                  Interest Packet Header Format
+                  Data Packet Header Format
 ~~~~
 {: #fig-data title="IPv6 data packet L3 header."}
 
