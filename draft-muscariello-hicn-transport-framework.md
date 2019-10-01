@@ -146,7 +146,7 @@ hicn allows to reuse existing IPv6 protocol and architectures, to extend them an
 
 The words "MUST", "MUST NOT", "SHOULD", and "MAY" are used in this document.
 It's not shouting; when these words are capitalized, they have a special
-meaning as defined in {{?RFC2119}}.
+meaning as defined in {{RFC2119}}.
 
 
 # Transport framework architecture
@@ -180,7 +180,7 @@ We use substantially unaltered the INET6 socket API for \hicn{} with the twofold
 advantage to provide a known API for developers of new applications and simple 
 integration of existing ones.
 The system calls of \hicn{} socket API are based on the socket interface extensions 
-for IPv6 {{?RFC3493}}. Both consumer and producer sockets bind to a socket address 
+for IPv6 \cite{rfc3493}. Both consumer and producer sockets bind to a socket address 
 (\sa{}), which is initialized by specifying address family 
 \af  and name prefix. The range of addresses stated by the name prefix 
 tells the namespace in which a producer socket is allowed to publish data and a 
