@@ -1,6 +1,6 @@
 ---
 title: "Anchorless mobility through hICN"
-docname: draft-auge-dmm-hicn-mobility-02
+docname: draft-auge-dmm-hicn-mobility-03
 date: 
 category: info
 
@@ -115,13 +115,14 @@ informative:
 
 --- abstract
 
-This document first dicusses the use of locators and identifiers in mobility
+This document first discusses the use of locators and identifiers in mobility
 management architectures, and their implication on various anchorless
 properties. A new architecture is then proposed that is purely based on
-identifiers, and more specifically names as defined in Hybrid-ICN {{?I-D.muscariello-intarea-hicn}}.
-The document then focuses on two main cases: the end-point sends data (data
-producer) or the end-point receives data (data consumer). These two cases are
-taken into account entirely to provide anchorless mobility management in hICN.
+identifiers, and more specifically names as defined in Hybrid-ICN (hICN)
+{{?I-D.muscariello-intarea-hicn}}. The document then focuses on two main cases:
+the end-point sends data (data producer) or the end-point receives data (data
+consumer). These two cases are taken into account entirely to provide anchorless
+mobility management in hICN.
 
 --- middle
 
@@ -157,7 +158,7 @@ anchorless operations, and show their tight coupling with the use of locators
 and identifiers. This definition serves to position Loc/ID-split architectures
 with respect to the traditional use of tunnels, before advocating to push this
 step further and perform mobility management purely based on identifiers. We
-introduce a mobility approach based on Hybrid ICN as described in
+introduce a mobility approach based on Hybrid ICN (hICN) as described in
 {{?I-D.muscariello-intarea-hicn}}, for which we perform an in-depth analysis of
 mobility considerations. We show how this proposal can help addressing further
 challenges faced by networks today, such as multihoming and multipath, while

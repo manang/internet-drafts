@@ -1,7 +1,7 @@
 ---
 title: "Anchorless mobility management through hICN (hICN-AMM): Deployment options"
 abbrev: "hICN mobility: deployment options"
-docname: draft-auge-dmm-hicn-mobility-deployment-options-02
+docname: draft-auge-dmm-hicn-mobility-deployment-options-03
 
 date:
 category: info
@@ -94,7 +94,7 @@ informative:
 A novel mobility management approach is described in {{?I-D.auge-dmm-hicn-mobility}},
 that leverages routable location-independent identifiers (IDs) and an
 Information-Centric Networking (ICN) communication model integrated in IPv6,
-(also referred to as Hybrid ICN, hICN, {{?I-D.muscariello-intarea-hicn}}.
+also referred to as Hybrid ICN (hICN) {{?I-D.muscariello-intarea-hicn}}.
 
 Such approach belongs to the category of pure ID-based mobility management
 schemes whose objective is (i) to overcome the limitations of traditional

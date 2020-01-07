@@ -1,8 +1,8 @@
 ---
 title: "MAP-Me : Managing Anchorless Mobility in Content Centric Networking"
 abbrev: Managing Anchorless Mobility in CCN
-docname: draft-irtf-icnrg-mapme-03
-date: 2019-04
+docname: draft-irtf-icnrg-mapme-04
+date: 2019-10
 category: info
 
 ipr:
