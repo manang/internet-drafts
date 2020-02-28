@@ -14,7 +14,9 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - uses: docker://icnteam/internet-drafts:latest
-    - name: build html
-      run: make
-    - name: build pdf
-      run: make pdf
+      with:
+        shell: bash
+        run: |
+          make
+          make pdf
+        
