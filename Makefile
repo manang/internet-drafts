@@ -1,6 +1,6 @@
 SHELL:=/bin/bash
 LIBDIR := lib
-include $(LIBDIR)/main.mk
+-include $(LIBDIR)/main.mk
 
 $(LIBDIR)/main.mk:
 ifneq (,$(shell git submodule status $(LIBDIR) 2>/dev/null))
