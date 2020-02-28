@@ -15,5 +15,8 @@ jobs:
     - uses: actions/checkout@v2
     - uses: docker://icnteam/internet-drafts:latest
       with:
-        entrypoint: /bin/bash
-        args: make
+        entrypoint: /usr/bin/make
+    - uses: docker://icnteam/internet-drafts:latest
+      with:
+        entrypoint: /usr/bin/make
+        arg: pdf
